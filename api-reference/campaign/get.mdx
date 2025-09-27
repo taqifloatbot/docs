@@ -1,0 +1,252 @@
+---
+title: "Get Campaign"
+openapi: 'GET /v2/campaign/{campaignId}'
+description: "Retrieve detailed information about a specific campaign"
+---
+
+# Get Campaign
+
+Retrieve comprehensive details about a specific campaign including its configuration, status, performance metrics, and associated data.
+
+## Overview
+
+The Get Campaign endpoint provides detailed information about a campaign, including:
+
+- **Campaign Configuration**: All campaign settings and parameters
+- **Current Status**: Real-time campaign status and progress
+- **Performance Metrics**: Delivery rates, response rates, and engagement data
+- **Contact Information**: Details about the target audience
+- **Scheduling Details**: Start/end times, timezone, and execution schedule
+
+## Examples
+
+### Basic Campaign Retrieval
+
+<RequestExample>
+```bash cURL
+curl -X GET 'https://api.example.com/v2/campaign/12345' \
+  -H 'xi-api-key: YOUR_API_KEY'
+```
+</RequestExample>
+
+<ResponseExample>
+```json Success Response
+{
+  "id": 12345,
+  "name": "Summer Sale 2024",
+  "type": "sms",
+  "status": "active",
+  "bot_id": "507f1f77bcf86cd799439011",
+  "sip_caller_id": {
+    "n": "+1234567890",
+    "type": "phone"
+  },
+  "list_ids": [1, 2, 3],
+  "days": [1, 2, 3, 4, 5],
+  "start_date": "2024-06-01",
+  "end_date": "2024-06-30",
+  "start_time": "09:00:00",
+  "end_time": "17:00:00",
+  "timezone": "America/New_York",
+  "created_at": "2024-05-15T10:30:00Z",
+  "updated_at": "2024-05-20T14:22:00Z",
+  "performance": {
+    "total_contacts": 1500,
+    "messages_sent": 1450,
+    "delivery_rate": 98.5,
+    "response_rate": 12.3,
+    "conversion_rate": 5.8
+  }
+}
+```
+</ResponseExample>
+
+### Phone Campaign Details
+
+<RequestExample>
+```bash cURL
+curl -X GET 'https://api.example.com/v2/campaign/12346' \
+  -H 'xi-api-key: YOUR_API_KEY'
+```
+</RequestExample>
+
+<ResponseExample>
+```json Phone Campaign Response
+{
+  "id": 12346,
+  "name": "Lead Qualification Calls",
+  "type": "phone",
+  "status": "completed",
+  "bot_id": "507f1f77bcf86cd799439011",
+  "sip_caller_id": {
+    "n": "+1234567890",
+    "type": "phone"
+  },
+  "list_ids": [4, 5],
+  "days": [1, 2, 3, 4, 5],
+  "start_date": "2024-05-01",
+  "end_date": "2024-05-31",
+  "start_time": "09:00:00",
+  "end_time": "17:00:00",
+  "timezone": "America/New_York",
+  "created_at": "2024-04-25T09:15:00Z",
+  "completed_at": "2024-05-31T17:00:00Z",
+  "performance": {
+    "total_contacts": 500,
+    "calls_attempted": 500,
+    "calls_completed": 450,
+    "completion_rate": 90.0,
+    "average_duration": 120,
+    "bot_interactions": 380,
+    "human_transfers": 70
+  }
+}
+```
+</ResponseExample>
+
+### WhatsApp Campaign Details
+
+<RequestExample>
+```bash cURL
+curl -X GET 'https://api.example.com/v2/campaign/12347' \
+  -H 'xi-api-key: YOUR_API_KEY'
+```
+</RequestExample>
+
+<ResponseExample>
+```json WhatsApp Campaign Response
+{
+  "id": 12347,
+  "name": "Customer Onboarding WhatsApp",
+  "type": "whatsapp",
+  "status": "active",
+  "bot_id": "507f1f77bcf86cd799439011",
+  "sip_caller_id": "+1234567890",
+  "list_ids": [6, 7],
+  "days": [1, 2, 3, 4, 5],
+  "start_date": "2024-06-01",
+  "end_date": "2024-06-15",
+  "start_time": "09:00:00",
+  "end_time": "17:00:00",
+  "timezone": "Europe/London",
+  "meta_data": {
+    "phone_number_id": "123456789012345",
+    "template_name": "welcome_message",
+    "template_id": "1234567890123456789",
+    "language_code": "en_US",
+    "namespace": "your_namespace"
+  },
+  "created_at": "2024-05-28T14:30:00Z",
+  "performance": {
+    "total_contacts": 200,
+    "messages_sent": 200,
+    "delivery_rate": 99.5,
+    "read_rate": 85.0,
+    "response_rate": 25.0,
+    "template_approval": "approved"
+  }
+}
+```
+</ResponseExample>
+
+## Response Fields
+
+### Campaign Information
+- **id**: Unique campaign identifier
+- **name**: Campaign name
+- **type**: Campaign type (phone, sms, whatsapp)
+- **status**: Current campaign status
+- **bot_id**: Associated bot identifier
+- **created_at**: Campaign creation timestamp
+- **updated_at**: Last modification timestamp
+
+### Scheduling Information
+- **start_date**: Campaign start date
+- **end_date**: Campaign end date
+- **start_time**: Daily start time
+- **end_time**: Daily end time
+- **timezone**: Campaign timezone
+- **days**: Days of the week when campaign runs
+
+### Performance Metrics
+- **total_contacts**: Number of contacts in the campaign
+- **messages_sent**: Number of messages sent
+- **delivery_rate**: Percentage of messages successfully delivered
+- **response_rate**: Percentage of contacts who responded
+- **conversion_rate**: Percentage of contacts who completed desired actions
+
+## Campaign Status Values
+
+| Status | Code | Description |
+|--------|------|-------------|
+| Active | 1 | Campaign is currently running |
+| Paused | 2 | Campaign is temporarily stopped |
+| Completed | 3 | Campaign has finished successfully |
+| Cancelled | -1 | Campaign was cancelled before completion |
+| Failed | -2 | Campaign encountered errors during execution |
+| Archived | -3 | Campaign has been archived |
+
+## Use Cases
+
+### Campaign Monitoring
+- **Real-time Status**: Check if campaigns are running as expected
+- **Performance Tracking**: Monitor delivery and response rates
+- **Troubleshooting**: Identify issues with campaign execution
+
+### Campaign Management
+- **Configuration Review**: Verify campaign settings and parameters
+- **Audience Analysis**: Understand the target audience size and composition
+- **Scheduling Verification**: Confirm campaign timing and timezone settings
+
+### Reporting and Analytics
+- **Performance Reports**: Generate reports on campaign effectiveness
+- **ROI Analysis**: Calculate return on investment for campaigns
+- **Optimization**: Identify areas for campaign improvement
+
+## Error Handling
+
+<AccordionGroup>
+<Accordion title="Campaign Not Found">
+  - **Error**: `404 Not Found`
+  - **Cause**: Campaign ID doesn't exist or user doesn't have access
+  - **Solution**: Verify the campaign ID and ensure you have proper permissions
+</Accordion>
+
+<Accordion title="Invalid Campaign ID">
+  - **Error**: `400 Bad Request`
+  - **Cause**: Campaign ID is not a valid number
+  - **Solution**: Ensure the campaign ID is a valid integer
+</Accordion>
+
+<Accordion title="Access Denied">
+  - **Error**: `403 Forbidden`
+  - **Cause**: User doesn't have permission to access this campaign
+  - **Solution**: Contact administrator for proper access permissions
+</Accordion>
+</AccordionGroup>
+
+## Best Practices
+
+### Regular Monitoring
+<Tip>
+**Check Status Regularly**: Monitor campaign status to ensure they're running as expected.
+</Tip>
+
+### Performance Analysis
+<Warning>
+**Track Metrics**: Use performance data to optimize future campaigns and improve ROI.
+</Warning>
+
+### Data Security
+<Info>
+**Secure Access**: Ensure only authorized users can access campaign details and performance data.
+</Info>
+
+## Next Steps
+
+After retrieving campaign details:
+
+- [Update Campaign](/api-reference/campaign/update) - Modify campaign settings
+- [Add Campaign Contacts](/api-reference/campaign/contacts) - Manage campaign audience
+- [Monitor Performance](/api-reference/analytics) - Track detailed analytics
+- [Archive Campaign](/api-reference/campaign/archive) - Complete campaign lifecycle

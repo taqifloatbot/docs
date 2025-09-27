@@ -1,11 +1,11 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Mint Starter Kit",
+  "name": "Dashboard API",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#f46177",
+    "light": "#f46177",
+    "dark": "#f46177"
   },
   "favicon": "/favicon.svg",
   "navigation": {
@@ -51,18 +51,36 @@
         "tab": "API reference",
         "groups": [
           {
-            "group": "API documentation",
+            "group": "Getting Started",
             "pages": [
               "api-reference/introduction"
             ]
           },
           {
-            "group": "Endpoint examples",
+            "group": "Campaign API",
             "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "api-reference/campaign/create",
+              "api-reference/campaign/get",
+              "api-reference/campaign/update",
+              "api-reference/campaign/archive",
+              "api-reference/campaign/contacts"
+            ]
+          },
+          {
+            "group": "Contacts API",
+            "pages": [
+              "api-reference/contacts/list",
+              "api-reference/contacts/create",
+              "api-reference/contacts/get",
+              "api-reference/contacts/update",
+              "api-reference/contacts/upload"
+            ]
+          },
+          {
+            "group": "Analytics & Integration",
+            "pages": [
+              "api-reference/analytics",
+              "api-reference/webhooks"
             ]
           }
         ]
@@ -72,32 +90,32 @@
       "anchors": [
         {
           "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
+          "href": "https://docs.floatbot.ai",
           "icon": "book-open-cover"
         },
         {
           "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
+          "href": "https://floatbot.ai/blog",
           "icon": "newspaper"
         }
       ]
     }
   },
   "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
+    "light": "/logo/image.png",
+    "dark": "/logo/image.png"
   },
   "navbar": {
     "links": [
       {
         "label": "Support",
-        "href": "mailto:hi@mintlify.com"
+        "href": "mailto:support@floatbot.ai"
       }
     ],
     "primary": {
       "type": "button",
       "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
+      "href": "https://floatbot.ai/login"
     }
   },
   "contextual": {
@@ -114,9 +132,9 @@
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+      "x": "https://x.com/example",
+      "github": "https://github.com/example",
+      "linkedin": "https://linkedin.com/company/example"
     }
   }
 }

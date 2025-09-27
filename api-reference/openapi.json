@@ -1,54 +1,94 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "OpenAPI Plant Store",
-    "description": "A sample API that uses a plant store as an example to demonstrate features in the OpenAPI specification",
+    "title": "Dashboard API",
+    "description": "API for managing campaigns, contact lists, and marketing automation",
     "license": {
       "name": "MIT"
     },
-    "version": "1.0.0"
+    "version": "2.0.0"
   },
   "servers": [
     {
-      "url": "http://sandbox.mintlify.com"
+      "url": "https://api.example.com"
     }
   ],
   "security": [
     {
-      "bearerAuth": []
+      "apiKeyAuth": []
     }
   ],
   "paths": {
-    "/plants": {
-      "get": {
-        "description": "Returns all plants from the system that the user has access to",
-        "parameters": [
-          {
-            "name": "limit",
-            "in": "query",
-            "description": "The maximum number of results to return",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
+    "/v2/campaign/create": {
+      "post": {
+        "summary": "Create Campaign V2",
+        "description": "Create a new marketing campaign with advanced scheduling and timezone support",
+        "tags": ["Campaigns"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCampaignV2"
+              }
             }
           }
-        ],
+        },
         "responses": {
-          "200": {
-            "description": "Plant response",
+          "201": {
+            "description": "Campaign created successfully",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Plant"
-                  }
+                  "$ref": "#/components/schemas/CampaignResponse"
                 }
               }
             }
           },
           "400": {
-            "description": "Unexpected error",
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/campaign/contacts": {
+      "get": {
+        "summary": "Get Contact Lists",
+        "description": "Retrieve all contact lists for the authenticated user",
+        "tags": ["Contacts"],
+        "responses": {
+          "200": {
+            "description": "List of contact lists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ContactList"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -60,31 +100,32 @@
         }
       },
       "post": {
-        "description": "Creates a new plant in the store",
+        "summary": "Create Contact List",
+        "description": "Create a new contact list with contacts",
+        "tags": ["Contacts"],
         "requestBody": {
-          "description": "Plant to add to the store",
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/NewPlant"
+                "$ref": "#/components/schemas/CreateContactList"
               }
             }
-          },
-          "required": true
+          }
         },
         "responses": {
-          "200": {
-            "description": "plant response",
+          "201": {
+            "description": "Contact list created successfully",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Plant"
+                  "$ref": "#/components/schemas/ContactListResponse"
                 }
               }
             }
           },
           "400": {
-            "description": "unexpected error",
+            "description": "Bad request",
             "content": {
               "application/json": {
                 "schema": {
@@ -96,28 +137,46 @@
         }
       }
     },
-    "/plants/{id}": {
-      "delete": {
-        "description": "Deletes a single plant based on the ID supplied",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "ID of plant to delete",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
+    "/v2/campaign/contacts/upload": {
+      "post": {
+        "summary": "Upload Contact List (CSV)",
+        "description": "Upload a CSV file to create a contact list",
+        "tags": ["Contacts"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "CSV file containing contacts"
+                  },
+                  "list_name": {
+                    "type": "string",
+                    "description": "Name for the contact list"
+                  }
+                },
+                "required": ["file", "list_name"]
+              }
             }
           }
-        ],
+        },
         "responses": {
-          "204": {
-            "description": "Plant deleted",
-            "content": {}
+          "201": {
+            "description": "CSV uploaded successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactListResponse"
+                }
+              }
+            }
           },
           "400": {
-            "description": "unexpected error",
+            "description": "Bad request",
             "content": {
               "application/json": {
                 "schema": {
@@ -128,25 +187,407 @@
           }
         }
       }
-    }
-  },
-  "webhooks": {
-    "/plant/webhook": {
+    },
+    "/v2/campaign/contacts/{listId}": {
+      "get": {
+        "summary": "Get Contacts of List",
+        "description": "Retrieve all contacts from a specific contact list",
+        "tags": ["Contacts"],
+        "parameters": [
+          {
+            "name": "listId",
+            "in": "path",
+            "required": true,
+            "description": "ID of the contact list",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of contacts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Contact"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Contact list not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
       "post": {
-        "description": "Information about a new plant added to the store",
+        "summary": "Update Contact List",
+        "description": "Update the name of a contact list",
+        "tags": ["Contacts"],
+        "parameters": [
+          {
+            "name": "listId",
+            "in": "path",
+            "required": true,
+            "description": "ID of the contact list",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
         "requestBody": {
-          "description": "Plant added to the store",
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/NewPlant"
+                "type": "object",
+                "properties": {
+                  "list_name": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 200,
+                    "description": "New name for the contact list"
+                  }
+                },
+                "required": ["list_name"]
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "Return a 200 status to indicate that the data was received successfully"
+            "description": "Contact list updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/campaign/contacts/{listId}/archive": {
+      "post": {
+        "summary": "Archive Contact List",
+        "description": "Archive a contact list",
+        "tags": ["Contacts"],
+        "parameters": [
+          {
+            "name": "listId",
+            "in": "path",
+            "required": true,
+            "description": "ID of the contact list to archive",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact list archived successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Contact list not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/campaign/contact/{listId}/archive": {
+      "post": {
+        "summary": "Archive Contacts",
+        "description": "Archive specific contacts from a contact list",
+        "tags": ["Contacts"],
+        "parameters": [
+          {
+            "name": "listId",
+            "in": "path",
+            "required": true,
+            "description": "ID of the contact list",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "targets": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Array of contact IDs to archive"
+                  }
+                },
+                "required": ["targets"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Contacts archived successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/campaign/{campaignId}": {
+      "get": {
+        "summary": "Get Campaign by ID",
+        "description": "Retrieve details of a specific campaign",
+        "tags": ["Campaigns"],
+        "parameters": [
+          {
+            "name": "campaignId",
+            "in": "path",
+            "required": true,
+            "description": "ID of the campaign",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Campaign details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Campaign"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Campaign not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Update Campaign",
+        "description": "Update campaign status",
+        "tags": ["Campaigns"],
+        "parameters": [
+          {
+            "name": "campaignId",
+            "in": "path",
+            "required": true,
+            "description": "ID of the campaign",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "campaign_status": {
+                    "type": "integer",
+                    "enum": [1, 2, 3, -1, -2, -3],
+                    "description": "Campaign status: 1=active, 2=paused, 3=completed, -1=cancelled, -2=failed, -3=archived"
+                  }
+                },
+                "required": ["campaign_status"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Campaign updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/campaign/{campaignId}/archive": {
+      "post": {
+        "summary": "Archive Campaign",
+        "description": "Archive a campaign",
+        "tags": ["Campaigns"],
+        "parameters": [
+          {
+            "name": "campaignId",
+            "in": "path",
+            "required": true,
+            "description": "ID of the campaign to archive",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Campaign archived successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Campaign not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/campaign/{campaignId}/contacts": {
+      "post": {
+        "summary": "Update Campaign Contacts",
+        "description": "Add or update contacts for a campaign",
+        "tags": ["Campaigns"],
+        "parameters": [
+          {
+            "name": "campaignId",
+            "in": "path",
+            "required": true,
+            "description": "ID of the campaign",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "contacts": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ContactInput"
+                    },
+                    "description": "Array of contacts to add to the campaign"
+                  }
+                },
+                "required": ["contacts"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Campaign contacts updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "currentCampaignStatus": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }
@@ -154,63 +595,277 @@
   },
   "components": {
     "schemas": {
-      "Plant": {
-        "required": [
-          "name"
-        ],
+      "CreateCampaignV2": {
         "type": "object",
+        "required": ["type", "name", "bot_id", "sip_caller_id", "list_ids", "days", "start_date", "end_date", "start_time", "end_time"],
         "properties": {
-          "name": {
-            "description": "The name of the plant",
-            "type": "string"
+          "type": {
+            "type": "string",
+            "enum": ["phone", "sms", "whatsapp"],
+            "description": "Campaign type"
           },
-          "tag": {
-            "description": "Tag to specify the type",
-            "type": "string"
+          "name": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 100,
+            "pattern": "^[a-zA-Z0-9._ ]*$",
+            "description": "Campaign name"
+          },
+          "bot_id": {
+            "type": "string",
+            "description": "Bot ID for the campaign"
+          },
+          "sip_caller_id": {
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "SIP caller ID for WhatsApp campaigns"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "n": {
+                    "type": "string",
+                    "description": "Phone number"
+                  },
+                  "type": {
+                    "type": "string",
+                    "description": "Caller ID type"
+                  }
+                },
+                "required": ["n", "type"]
+              }
+            ],
+            "description": "SIP caller ID configuration"
+          },
+          "list_ids": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "description": "Array of contact list IDs"
+          },
+          "days": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 6
+            },
+            "description": "Days of the week (0=Sunday, 6=Saturday)"
+          },
+          "start_date": {
+            "type": "string",
+            "format": "date",
+            "description": "Campaign start date (YYYY-MM-DD)"
+          },
+          "end_date": {
+            "type": "string",
+            "format": "date",
+            "description": "Campaign end date (YYYY-MM-DD)"
+          },
+          "start_time": {
+            "type": "string",
+            "pattern": "^\\d{2}:\\d{2}:\\d{2}$",
+            "description": "Campaign start time (HH:MM:SS)"
+          },
+          "end_time": {
+            "type": "string",
+            "pattern": "^\\d{2}:\\d{2}:\\d{2}$",
+            "description": "Campaign end time (HH:MM:SS)"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "Timezone for campaign scheduling"
+          },
+          "meta_data": {
+            "type": "object",
+            "description": "Campaign-specific metadata"
           }
         }
       },
-      "NewPlant": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/Plant"
-          },
-          {
-            "required": [
-              "id"
-            ],
-            "type": "object",
-            "properties": {
-              "id": {
-                "description": "Identification number of the plant",
-                "type": "integer",
-                "format": "int64"
-              }
-            }
+      "CampaignResponse": {
+        "type": "object",
+        "properties": {
+          "campaignId": {
+            "type": "integer",
+            "description": "ID of the created campaign"
           }
-        ]
+        }
+      },
+      "Campaign": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Campaign ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "Campaign name"
+          },
+          "type": {
+            "type": "string",
+            "description": "Campaign type"
+          },
+          "status": {
+            "type": "string",
+            "description": "Campaign status"
+          },
+          "bot_id": {
+            "type": "string",
+            "description": "Associated bot ID"
+          },
+          "start_date": {
+            "type": "string",
+            "format": "date",
+            "description": "Campaign start date"
+          },
+          "end_date": {
+            "type": "string",
+            "format": "date",
+            "description": "Campaign end date"
+          },
+          "start_time": {
+            "type": "string",
+            "description": "Campaign start time"
+          },
+          "end_time": {
+            "type": "string",
+            "description": "Campaign end time"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Campaign creation timestamp"
+          }
+        }
+      },
+      "ContactList": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Contact list ID"
+          },
+          "list_name": {
+            "type": "string",
+            "description": "Contact list name"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation timestamp"
+          },
+          "contact_count": {
+            "type": "integer",
+            "description": "Number of contacts in the list"
+          }
+        }
+      },
+      "CreateContactList": {
+        "type": "object",
+        "required": ["listName", "contacts"],
+        "properties": {
+          "listName": {
+            "type": "string",
+            "description": "Name for the contact list"
+          },
+          "contacts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContactInput"
+            },
+            "minItems": 1,
+            "description": "Array of contacts to add"
+          }
+        }
+      },
+      "ContactInput": {
+        "type": "object",
+        "required": ["sys_phone"],
+        "properties": {
+          "sys_phone": {
+            "type": "string",
+            "description": "Contact phone number"
+          }
+        },
+        "additionalProperties": true,
+        "description": "Contact object with required sys_phone and additional attributes"
+      },
+      "Contact": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Contact ID"
+          },
+          "sys_phone": {
+            "type": "string",
+            "description": "Contact phone number"
+          },
+          "attributes": {
+            "type": "object",
+            "description": "Additional contact attributes"
+          },
+          "date_added": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date when contact was added"
+          }
+        }
+      },
+      "ContactListResponse": {
+        "type": "object",
+        "properties": {
+          "listId": {
+            "type": "integer",
+            "description": "ID of the created contact list"
+          },
+          "imported_count": {
+            "type": "integer",
+            "description": "Number of contacts imported"
+          },
+          "message": {
+            "type": "string",
+            "description": "Response message"
+          }
+        }
+      },
+      "SuccessResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "Success status"
+          },
+          "message": {
+            "type": "string",
+            "description": "Response message"
+          }
+        }
       },
       "Error": {
-        "required": [
-          "error",
-          "message"
-        ],
         "type": "object",
+        "required": ["error", "message"],
         "properties": {
           "error": {
             "type": "integer",
-            "format": "int32"
+            "description": "Error code"
           },
           "message": {
-            "type": "string"
+            "type": "string",
+            "description": "Error message"
           }
         }
       }
     },
     "securitySchemes": {
-      "bearerAuth": {
-        "type": "http",
-        "scheme": "bearer"
+      "apiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "xi-api-key",
+        "description": "API key for authentication"
       }
     }
   }

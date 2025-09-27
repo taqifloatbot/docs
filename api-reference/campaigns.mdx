@@ -1,0 +1,150 @@
+---
+title: "Campaigns API"
+description: "Manage marketing campaigns with advanced scheduling and multi-channel support"
+---
+
+# Campaigns API
+
+The Campaigns API provides endpoints for creating, managing, and monitoring marketing campaigns across multiple channels including phone, SMS, and WhatsApp.
+
+## Overview
+
+Campaigns are the core of the marketing automation platform, allowing you to:
+
+- **Create targeted campaigns** with specific audiences and scheduling
+- **Support multiple channels** (phone, SMS, WhatsApp) from a single campaign
+- **Schedule campaigns** with timezone support for global reach
+- **Monitor performance** with detailed analytics and reporting
+- **Manage campaign lifecycle** from creation to completion
+
+## Campaign Types
+
+<CardGroup cols={2}>
+<Card title="Phone Campaigns" icon="phone">
+  Voice-based campaigns with interactive bot conversations and call recording capabilities.
+</Card>
+
+<Card title="SMS Campaigns" icon="message">
+  Text message campaigns with support for media attachments and rich messaging.
+</Card>
+
+<Card title="WhatsApp Campaigns" icon="whatsapp">
+  WhatsApp Business API campaigns with template messaging and media support.
+</Card>
+</CardGroup>
+
+## Key Features
+
+### Advanced Scheduling
+- **Timezone Support**: Schedule campaigns in any timezone
+- **Recurring Campaigns**: Set up campaigns that run on specific days
+- **Time-based Execution**: Define precise start and end times
+- **Date Range**: Set campaign duration with start and end dates
+
+### Multi-Channel Support
+- **Unified Interface**: Manage all channels from a single API
+- **Channel-specific Configuration**: Optimize settings for each channel type
+- **Cross-channel Analytics**: Track performance across all channels
+
+### Contact Management
+- **Dynamic Contact Lists**: Add or remove contacts from campaigns
+- **Contact Attributes**: Store and use custom contact information
+- **Bulk Operations**: Manage large contact lists efficiently
+
+## Campaign Lifecycle
+
+<Steps>
+<Step title="Create Campaign">
+  Define campaign parameters including type, scheduling, and target audience.
+</Step>
+
+<Step title="Configure Channels">
+  Set up channel-specific settings like phone numbers, templates, or bot configurations.
+</Step>
+
+<Step title="Add Contacts">
+  Populate the campaign with target contacts from your contact lists.
+</Step>
+
+<Step title="Schedule Execution">
+  Set the campaign schedule with timezone and timing preferences.
+</Step>
+
+<Step title="Monitor Performance">
+  Track campaign execution and analyze results in real-time.
+</Step>
+</Steps>
+
+## Campaign Status
+
+Campaigns can have the following statuses:
+
+| Status | Code | Description |
+|--------|------|-------------|
+| Active | 1 | Campaign is running and executing |
+| Paused | 2 | Campaign is temporarily stopped |
+| Completed | 3 | Campaign has finished successfully |
+| Cancelled | -1 | Campaign was cancelled before completion |
+| Failed | -2 | Campaign encountered errors during execution |
+| Archived | -3 | Campaign has been archived |
+
+## Best Practices
+
+<Tip>
+**Campaign Planning**: Always test your campaigns with a small audience before full deployment.
+</Tip>
+
+<Warning>
+**Rate Limits**: Be mindful of channel-specific rate limits, especially for WhatsApp and SMS.
+</Warning>
+
+<Info>
+**Timezone Considerations**: Use timezone-aware scheduling to ensure campaigns run at the right local time for your audience.
+</Info>
+
+## Common Use Cases
+
+### Lead Generation Campaigns
+- **Phone**: Automated outbound calls with lead qualification
+- **SMS**: Follow-up messages with call-to-action links
+- **WhatsApp**: Rich media messages with interactive buttons
+
+### Customer Engagement
+- **Phone**: Personalized voice messages and surveys
+- **SMS**: Transactional notifications and updates
+- **WhatsApp**: Customer support and FAQ automation
+
+### Marketing Automation
+- **Phone**: Drip campaigns with progressive messaging
+- **SMS**: Event-triggered notifications and reminders
+- **WhatsApp**: Product launches and promotional campaigns
+
+## Error Handling
+
+Common error scenarios and solutions:
+
+<AccordionGroup>
+<Accordion title="Invalid Campaign Parameters">
+  - **Error**: `400 Bad Request`
+  - **Cause**: Missing required fields or invalid data types
+  - **Solution**: Verify all required fields are provided and data types match the schema
+</Accordion>
+
+<Accordion title="Authentication Issues">
+  - **Error**: `401 Unauthorized`
+  - **Cause**: Invalid or missing API key
+  - **Solution**: Check your API key and ensure it's included in the request header
+</Accordion>
+
+<Accordion title="Rate Limit Exceeded">
+  - **Error**: `429 Too Many Requests`
+  - **Cause**: Exceeded API rate limits
+  - **Solution**: Implement exponential backoff and respect rate limit headers
+</Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+- [Contact Lists API](/api-reference/contacts) - Manage your contact lists
+- [Analytics API](/api-reference/analytics) - Monitor campaign performance
+- [Webhooks](/api-reference/webhooks) - Real-time campaign updates

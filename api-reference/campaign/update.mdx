@@ -1,0 +1,316 @@
+---
+title: "Update Campaign"
+openapi: 'POST /v2/campaign/{campaignId}'
+description: "Update campaign status and configuration settings"
+---
+
+# Update Campaign
+
+Update campaign status and configuration settings. This endpoint allows you to pause, resume, or modify campaign parameters while maintaining campaign integrity.
+
+## Overview
+
+The Update Campaign endpoint enables you to:
+
+- **Change Campaign Status**: Pause, resume, or complete campaigns
+- **Modify Settings**: Update campaign configuration parameters
+- **Control Execution**: Start or stop campaign execution
+- **Maintain Data**: Preserve campaign history and performance data
+
+## Campaign Status Updates
+
+### Status Management
+You can update campaign status to control execution:
+
+| Status | Code | Description | Use Case |
+|--------|------|-------------|----------|
+| Active | 1 | Start or resume campaign execution | Launch new campaigns or resume paused ones |
+| Paused | 2 | Temporarily stop campaign execution | Pause for maintenance or issues |
+| Completed | 3 | Mark campaign as finished | End campaigns that have reached their goals |
+| Cancelled | -1 | Cancel campaign before completion | Stop campaigns that are no longer needed |
+| Failed | -2 | Mark campaign as failed | Handle campaigns that encountered errors |
+| Archived | -3 | Archive completed campaigns | Clean up old campaigns |
+
+## Examples
+
+### Pause an Active Campaign
+
+<RequestExample>
+```bash cURL
+curl -X POST 'https://api.example.com/v2/campaign/12345' \
+  -H 'Content-Type: application/json' \
+  -H 'xi-api-key: YOUR_API_KEY' \
+  -d '{
+    "campaign_status": 2
+  }'
+```
+</RequestExample>
+
+<ResponseExample>
+```json Success Response
+{
+  "status": "success",
+  "message": "Campaign paused successfully"
+}
+```
+</ResponseExample>
+
+### Resume a Paused Campaign
+
+<RequestExample>
+```bash cURL
+curl -X POST 'https://api.example.com/v2/campaign/12345' \
+  -H 'Content-Type: application/json' \
+  -H 'xi-api-key: YOUR_API_KEY' \
+  -d '{
+    "campaign_status": 1
+  }'
+```
+</RequestExample>
+
+<ResponseExample>
+```json Success Response
+{
+  "status": "success",
+  "message": "Campaign resumed successfully"
+}
+```
+</ResponseExample>
+
+### Complete a Campaign
+
+<RequestExample>
+```bash cURL
+curl -X POST 'https://api.example.com/v2/campaign/12345' \
+  -H 'Content-Type: application/json' \
+  -H 'xi-api-key: YOUR_API_KEY' \
+  -d '{
+    "campaign_status": 3
+  }'
+```
+</RequestExample>
+
+<ResponseExample>
+```json Success Response
+{
+  "status": "success",
+  "message": "Campaign completed successfully"
+}
+```
+</ResponseExample>
+
+### Cancel a Campaign
+
+<RequestExample>
+```bash cURL
+curl -X POST 'https://api.example.com/v2/campaign/12345' \
+  -H 'Content-Type: application/json' \
+  -H 'xi-api-key: YOUR_API_KEY' \
+  -d '{
+    "campaign_status": -1
+  }'
+```
+</RequestExample>
+
+<ResponseExample>
+```json Success Response
+{
+  "status": "success",
+  "message": "Campaign cancelled successfully"
+}
+```
+</ResponseExample>
+
+### Archive a Campaign
+
+<RequestExample>
+```bash cURL
+curl -X POST 'https://api.example.com/v2/campaign/12345' \
+  -H 'Content-Type: application/json' \
+  -H 'xi-api-key: YOUR_API_KEY' \
+  -d '{
+    "campaign_status": -3
+  }'
+```
+</RequestExample>
+
+<ResponseExample>
+```json Success Response
+{
+  "status": "success",
+  "message": "Campaign archived successfully"
+}
+```
+</ResponseExample>
+
+## Campaign Lifecycle Management
+
+### Status Transitions
+Campaigns follow a specific lifecycle with valid status transitions:
+
+<Steps>
+<Step title="Created">
+  Campaign is created and scheduled for execution.
+</Step>
+
+<Step title="Active">
+  Campaign is running and executing according to schedule.
+</Step>
+
+<Step title="Paused">
+  Campaign execution is temporarily stopped.
+</Step>
+
+<Step title="Completed/Cancelled">
+  Campaign reaches its end state.
+</Step>
+
+<Step title="Archived">
+  Campaign is archived for long-term storage.
+</Step>
+</Steps>
+
+### Valid Status Changes
+
+| Current Status | Can Change To | Description |
+|----------------|---------------|-------------|
+| Active | Paused, Completed, Cancelled | Can pause, complete, or cancel active campaigns |
+| Paused | Active, Cancelled | Can resume or cancel paused campaigns |
+| Completed | Archived | Can archive completed campaigns |
+| Cancelled | Archived | Can archive cancelled campaigns |
+| Failed | Cancelled, Archived | Can cancel or archive failed campaigns |
+
+## Use Cases
+
+### Campaign Management
+- **Pause for Issues**: Temporarily stop campaigns experiencing problems
+- **Resume After Fix**: Restart campaigns after resolving issues
+- **Complete on Success**: Mark campaigns as completed when goals are achieved
+- **Cancel Unnecessary**: Stop campaigns that are no longer needed
+
+### Performance Optimization
+- **Pause Low Performers**: Stop campaigns with poor performance
+- **Resume After Optimization**: Restart campaigns after improvements
+- **Complete High Performers**: End successful campaigns at peak performance
+
+### Maintenance and Updates
+- **Pause for Updates**: Stop campaigns during system maintenance
+- **Resume After Updates**: Restart campaigns after system updates
+- **Archive Old Campaigns**: Clean up completed campaigns
+
+## Best Practices
+
+### Status Management
+<Tip>
+**Monitor Status Changes**: Keep track of campaign status changes for audit and reporting purposes.
+</Tip>
+
+### Performance Monitoring
+<Warning>
+**Check Performance Before Pausing**: Review campaign performance before pausing to avoid stopping successful campaigns.
+</Warning>
+
+### Lifecycle Management
+<Info>
+**Plan Status Transitions**: Have a clear plan for campaign lifecycle management to maintain data integrity.
+</Info>
+
+## Error Handling
+
+<AccordionGroup>
+<Accordion title="Invalid Status Code">
+  - **Error**: `400 Bad Request - Invalid campaign status`
+  - **Cause**: Status code is not valid or not allowed for current campaign state
+  - **Solution**: Use valid status codes (1, 2, 3, -1, -2, -3) and ensure transition is allowed
+</Accordion>
+
+<Accordion title="Campaign Not Found">
+  - **Error**: `404 Not Found`
+  - **Cause**: Campaign ID doesn't exist or user doesn't have access
+  - **Solution**: Verify the campaign ID and ensure you have proper permissions
+</Accordion>
+
+<Accordion title="Invalid Transition">
+  - **Error**: `400 Bad Request - Invalid status transition`
+  - **Cause**: Attempting to change to a status that's not allowed from current state
+  - **Solution**: Check valid status transitions and current campaign state
+</Accordion>
+
+<Accordion title="Campaign Already in State">
+  - **Error**: `400 Bad Request - Campaign already in requested state`
+  - **Cause**: Attempting to set campaign to its current status
+  - **Solution**: Check current campaign status before making changes
+</Accordion>
+</AccordionGroup>
+
+## Status Change Examples
+
+### Pause Active Campaign
+```json
+{
+  "campaign_status": 2
+}
+```
+
+### Resume Paused Campaign
+```json
+{
+  "campaign_status": 1
+}
+```
+
+### Complete Campaign
+```json
+{
+  "campaign_status": 3
+}
+```
+
+### Cancel Campaign
+```json
+{
+  "campaign_status": -1
+}
+```
+
+### Archive Campaign
+```json
+{
+  "campaign_status": -3
+}
+```
+
+## Monitoring Status Changes
+
+### Webhook Notifications
+Status changes trigger webhook events:
+
+```json
+{
+  "event": "campaign.status.changed",
+  "data": {
+    "campaign_id": 12345,
+    "old_status": 1,
+    "new_status": 2,
+    "changed_at": "2024-01-15T10:30:00Z"
+  }
+}
+```
+
+### Audit Trail
+All status changes are logged for compliance and debugging:
+
+- **Timestamp**: When the status was changed
+- **User**: Who made the change
+- **Reason**: Optional reason for the change
+- **Previous Status**: What the status was before
+- **New Status**: What the status is now
+
+## Next Steps
+
+After updating campaign status:
+
+- [Get Campaign Details](/api-reference/campaign/get) - Verify status changes
+- [Monitor Performance](/api-reference/analytics) - Track campaign metrics
+- [Add Campaign Contacts](/api-reference/campaign/contacts) - Manage audience
+- [Archive Campaign](/api-reference/campaign/archive) - Complete lifecycle

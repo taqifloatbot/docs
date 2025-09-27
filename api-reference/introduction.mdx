@@ -1,33 +1,135 @@
 ---
-title: 'Introduction'
-description: 'Example section for showcasing API endpoints'
+title: 'Dashboard API'
+description: 'Complete API reference for the Dashboard marketing automation platform'
 ---
 
-<Note>
-  If you're not looking to build API reference documentation, you can delete
-  this section by removing the api-reference folder.
-</Note>
+# Dashboard API
 
-## Welcome
+Welcome to the Dashboard API documentation. This API provides comprehensive endpoints for managing marketing campaigns, contact lists, and automation workflows across multiple channels including phone, SMS, and WhatsApp.
 
-There are two ways to build API documentation: [OpenAPI](https://mintlify.com/docs/api-playground/openapi/setup) and [MDX components](https://mintlify.com/docs/api-playground/mdx/configuration). For the starter kit, we are using the following OpenAPI specification.
+## Overview
+
+The Dashboard API is a RESTful service that enables you to:
+
+- **Create and manage marketing campaigns** with advanced scheduling and timezone support
+- **Organize contacts** into lists and manage contact attributes
+- **Execute multi-channel campaigns** across phone, SMS, and WhatsApp
+- **Monitor campaign performance** with detailed analytics and reporting
+- **Automate workflows** with intelligent bot interactions
+
+## Base URL
+
+All API requests should be made to:
+
+```
+https://api.example.com
+```
+
+## API Versioning
+
+The API uses URL-based versioning. Current versions:
+
+- **v1**: Legacy endpoints (deprecated)
+- **v2**: Current stable version with enhanced features
 
 <Card
-  title="Plant Store Endpoints"
-  icon="leaf"
-  href="https://github.com/mintlify/starter/blob/main/api-reference/openapi.json"
+  title="OpenAPI Specification"
+  icon="code"
+  href="/api-reference/openapi.json"
 >
-  View the OpenAPI specification file
+  Download the complete OpenAPI 3.1.0 specification
 </Card>
 
 ## Authentication
 
-All API endpoints are authenticated using Bearer tokens and picked up from the specification file.
+All API endpoints require authentication using API keys. Include your API key in the request header:
 
-```json
-"security": [
-  {
-    "bearerAuth": []
-  }
-]
+```bash
+curl -H "xi-api-key: YOUR_API_KEY" https://api.example.com/v2/campaign/contacts
 ```
+
+<Warning>
+Keep your API keys secure and never expose them in client-side code or public repositories.
+</Warning>
+
+## Rate Limits
+
+API requests are rate limited to ensure fair usage:
+
+- **Standard tier**: 1000 requests per hour
+- **Premium tier**: 10000 requests per hour
+- **Enterprise tier**: Unlimited
+
+Rate limit information is included in response headers:
+
+```
+X-RateLimit-Limit: 1000
+X-RateLimit-Remaining: 999
+X-RateLimit-Reset: 1640995200
+```
+
+## Response Format
+
+All API responses follow a consistent format:
+
+### Success Response
+```json
+{
+  "data": { ... },
+  "message": "Success",
+  "status": "success"
+}
+```
+
+### Error Response
+```json
+{
+  "error": 400,
+  "message": "Invalid request parameters",
+  "status": "error"
+}
+```
+
+## HTTP Status Codes
+
+| Code | Description |
+|------|-------------|
+| 200 | Success |
+| 201 | Created |
+| 400 | Bad Request |
+| 401 | Unauthorized |
+| 403 | Forbidden |
+| 404 | Not Found |
+| 429 | Rate Limited |
+| 500 | Internal Server Error |
+
+## Getting Started
+
+<Steps>
+<Step title="Get your API key">
+  Contact your administrator to obtain API credentials for accessing the Dashboard API.
+</Step>
+
+<Step title="Make your first request">
+  Test the API with a simple request to get contact lists:
+
+  ```bash
+  curl -H "xi-api-key: YOUR_API_KEY" \
+       https://api.example.com/v2/campaign/contacts
+  ```
+</Step>
+
+<Step title="Create a campaign">
+  Use the Campaign V2 endpoints to create your first marketing campaign with advanced scheduling.
+</Step>
+</Steps>
+
+## Support
+
+<Info>
+Need help? Contact our support team or check the troubleshooting guide for common issues.
+</Info>
+
+- **Email**: support@example.com
+- **Documentation**: This guide
+- **Status Page**: https://status.example.com

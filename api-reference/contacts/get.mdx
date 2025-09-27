@@ -1,0 +1,326 @@
+---
+title: "Get Contacts of List"
+openapi: 'GET /v2/campaign/contacts/{listId}'
+description: "Retrieve all contacts from a specific contact list"
+---
+
+# Get Contacts of List
+
+Retrieve all contacts from a specific contact list. This endpoint provides detailed information about each contact including their attributes and metadata.
+
+## Overview
+
+The Get Contacts of List endpoint allows you to:
+
+- **View Contact Details**: See all contacts in a specific list
+- **Access Attributes**: Retrieve custom attributes for each contact
+- **Contact Management**: Understand the composition of your contact lists
+- **Data Export**: Get contact data for analysis or export
+- **List Validation**: Verify list contents and data quality
+
+## Examples
+
+### Get Contacts from List
+
+<RequestExample>
+```bash cURL
+curl -X GET 'https://api.example.com/v2/campaign/contacts/123' \
+  -H 'xi-api-key: YOUR_API_KEY'
+```
+</RequestExample>
+
+<ResponseExample>
+```json Success Response
+[
+  {
+    "id": "contact_123",
+    "sys_phone": "1234567890",
+    "attributes": {
+      "first_name": "John",
+      "last_name": "Doe",
+      "email": "john@example.com",
+      "company": "Acme Corp",
+      "customer_tier": "premium"
+    },
+    "date_added": "2024-01-15T10:30:00Z"
+  },
+  {
+    "id": "contact_124",
+    "sys_phone": "1987654321",
+    "attributes": {
+      "first_name": "Jane",
+      "last_name": "Smith",
+      "email": "jane@example.com",
+      "company": "Tech Inc",
+      "customer_tier": "standard"
+    },
+    "date_added": "2024-01-16T14:22:00Z"
+  },
+  {
+    "id": "contact_125",
+    "sys_phone": "1555123456",
+    "attributes": {
+      "first_name": "Bob",
+      "last_name": "Johnson",
+      "email": "bob@example.com",
+      "company": "Startup Co",
+      "customer_tier": "basic"
+    },
+    "date_added": "2024-01-17T09:15:00Z"
+  }
+]
+```
+</ResponseExample>
+
+### Empty List Response
+
+<RequestExample>
+```bash cURL
+curl -X GET 'https://api.example.com/v2/campaign/contacts/456' \
+  -H 'xi-api-key: YOUR_API_KEY'
+```
+</RequestExample>
+
+<ResponseExample>
+```json Empty Response
+[]
+```
+</ResponseExample>
+
+### List with Custom Attributes
+
+<RequestExample>
+```bash cURL
+curl -X GET 'https://api.example.com/v2/campaign/contacts/789' \
+  -H 'xi-api-key: YOUR_API_KEY'
+```
+</RequestExample>
+
+<ResponseExample>
+```json Custom Attributes Response
+[
+  {
+    "id": "contact_126",
+    "sys_phone": "1234567890",
+    "attributes": {
+      "first_name": "John",
+      "last_name": "Doe",
+      "email": "john@example.com",
+      "company": "Acme Corp",
+      "industry": "Technology",
+      "preferred_language": "en",
+      "customer_tier": "premium",
+      "last_purchase": "2024-01-15",
+      "lead_score": 95,
+      "source": "website",
+      "notes": "Interested in enterprise plan"
+    },
+    "date_added": "2024-01-15T10:30:00Z"
+  }
+]
+```
+</ResponseExample>
+
+## Response Fields
+
+### Contact Information
+- **id**: Unique identifier for the contact
+- **sys_phone**: Contact's phone number (cleaned to digits only)
+- **attributes**: Object containing all custom contact attributes
+- **date_added**: When the contact was added to the list
+
+### Contact Attributes
+The `attributes` object can contain any custom fields:
+
+- **Standard Fields**: first_name, last_name, email, company
+- **Custom Fields**: Any additional attributes you've added
+- **Metadata**: Lead scores, preferences, notes, etc.
+- **Behavioral Data**: Engagement history, purchase history, etc.
+
+## Use Cases
+
+### Contact Management
+- **List Review**: Review all contacts in a specific list
+- **Data Quality**: Check contact data quality and completeness
+- **Attribute Analysis**: Analyze contact attributes for insights
+- **List Validation**: Verify list contents and accuracy
+
+### Campaign Planning
+- **Audience Analysis**: Understand your target audience composition
+- **Segmentation**: Analyze contact attributes for segmentation
+- **Personalization**: Use contact attributes for personalized messaging
+- **Campaign Optimization**: Optimize campaigns based on contact data
+
+### Data Export
+- **CSV Export**: Export contact data for external analysis
+- **CRM Integration**: Sync contact data with CRM systems
+- **Reporting**: Generate reports using contact data
+- **Data Migration**: Move contact data between systems
+
+### Quality Assurance
+- **Data Validation**: Verify contact data accuracy
+- **Duplicate Detection**: Identify potential duplicate contacts
+- **Attribute Completeness**: Check for missing or incomplete data
+- **Data Cleanup**: Identify contacts that need data updates
+
+## Best Practices
+
+### Data Privacy
+<Tip>
+**Protect Contact Data**: Ensure contact data is handled securely and in compliance with privacy regulations.
+</Tip>
+
+### Performance Optimization
+<Warning>
+**Large Lists**: Be mindful of performance when retrieving large contact lists.
+</Warning>
+
+### Data Quality
+<Info>
+**Regular Review**: Regularly review contact data to maintain quality and accuracy.
+</Info>
+
+## Error Handling
+
+<AccordionGroup>
+<Accordion title="List Not Found">
+  - **Error**: `404 Not Found`
+  - **Cause**: Contact list ID doesn't exist or user doesn't have access
+  - **Solution**: Verify the list ID and ensure you have proper permissions
+</Accordion>
+
+<Accordion title="Invalid List ID">
+  - **Error**: `400 Bad Request`
+  - **Cause**: List ID is not a valid number
+  - **Solution**: Ensure the list ID is a valid integer
+</Accordion>
+
+<Accordion title="Access Denied">
+  - **Error**: `403 Forbidden`
+  - **Cause**: User doesn't have permission to access this list
+  - **Solution**: Contact administrator for proper access permissions
+</Accordion>
+
+<Accordion title="List Archived">
+  - **Error**: `404 Not Found`
+  - **Cause**: Contact list has been archived
+  - **Solution**: Use an active contact list or restore the archived list
+</Accordion>
+</AccordionGroup>
+
+## Performance Considerations
+
+### Large Lists
+- **Pagination**: Consider implementing pagination for large contact lists
+- **Filtering**: Use filtering to retrieve specific subsets of contacts
+- **Caching**: Cache contact data for frequently accessed lists
+- **Async Processing**: Use async processing for large data retrieval
+
+### Data Optimization
+- **Selective Fields**: Request only the fields you need
+- **Compression**: Use compression for large data transfers
+- **Caching**: Cache frequently accessed contact data
+- **Batch Processing**: Process contacts in batches for better performance
+
+## Contact Data Analysis
+
+### Attribute Analysis
+```javascript
+// Analyze contact attributes
+const contacts = await getContactsFromList(123);
+const analysis = {
+  totalContacts: contacts.length,
+  attributes: {},
+  segments: {}
+};
+
+// Count attribute usage
+contacts.forEach(contact => {
+  Object.keys(contact.attributes).forEach(attr => {
+    analysis.attributes[attr] = (analysis.attributes[attr] || 0) + 1;
+  });
+});
+
+// Segment by customer tier
+contacts.forEach(contact => {
+  const tier = contact.attributes.customer_tier || 'unknown';
+  analysis.segments[tier] = (analysis.segments[tier] || 0) + 1;
+});
+```
+
+### Data Quality Check
+```python
+import requests
+
+# Get contacts and check data quality
+response = requests.get(
+    'https://api.example.com/v2/campaign/contacts/123',
+    headers={'xi-api-key': 'YOUR_API_KEY'}
+)
+contacts = response.json()
+
+# Check data quality
+quality_issues = []
+for contact in contacts:
+    if not contact.get('attributes', {}).get('email'):
+        quality_issues.append(f"Missing email for {contact['sys_phone']}")
+    if not contact.get('attributes', {}).get('first_name'):
+        quality_issues.append(f"Missing first name for {contact['sys_phone']}")
+
+print(f"Data quality issues: {len(quality_issues)}")
+```
+
+## Integration Examples
+
+### CRM Integration
+```javascript
+// Sync contacts with CRM
+const contacts = await getContactsFromList(123);
+const crmContacts = contacts.map(contact => ({
+  phone: contact.sys_phone,
+  firstName: contact.attributes.first_name,
+  lastName: contact.attributes.last_name,
+  email: contact.attributes.email,
+  company: contact.attributes.company
+}));
+
+// Send to CRM
+await syncWithCRM(crmContacts);
+```
+
+### Data Export
+```python
+import csv
+import requests
+
+# Export contacts to CSV
+response = requests.get(
+    'https://api.example.com/v2/campaign/contacts/123',
+    headers={'xi-api-key': 'YOUR_API_KEY'}
+)
+contacts = response.json()
+
+# Write to CSV
+with open('contacts.csv', 'w', newline='') as csvfile:
+    writer = csv.writer(csvfile)
+    writer.writerow(['Phone', 'First Name', 'Last Name', 'Email', 'Company'])
+    
+    for contact in contacts:
+        attrs = contact.get('attributes', {})
+        writer.writerow([
+            contact['sys_phone'],
+            attrs.get('first_name', ''),
+            attrs.get('last_name', ''),
+            attrs.get('email', ''),
+            attrs.get('company', '')
+        ])
+```
+
+## Next Steps
+
+After retrieving contact list details:
+
+- [Update Contact List](/api-reference/contacts/update) - Modify list information
+- [Archive Contact List](/api-reference/contacts/archive) - Archive the list
+- [Create Campaign](/api-reference/campaign/create) - Use the list in campaigns
+- [Monitor Campaign Performance](/api-reference/analytics) - Track campaign metrics

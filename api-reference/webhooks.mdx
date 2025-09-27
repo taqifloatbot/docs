@@ -1,0 +1,376 @@
+---
+title: "Webhooks API"
+description: "Real-time event notifications and campaign updates"
+---
+
+# Webhooks API
+
+Webhooks provide real-time notifications about events in your marketing automation platform. Stay informed about campaign progress, contact interactions, and system events without polling the API.
+
+## Overview
+
+Webhooks enable real-time integration with your marketing automation platform by sending HTTP POST requests to your specified endpoints when events occur. This allows you to:
+
+- **Monitor campaign progress** in real-time
+- **Track contact interactions** as they happen
+- **Integrate with external systems** for automated workflows
+- **Build custom dashboards** with live data
+- **Trigger automated responses** based on events
+
+## How Webhooks Work
+
+<Steps>
+<Step title="Configure Endpoint">
+  Set up a webhook endpoint URL in your application to receive notifications.
+</Step>
+
+<Step title="Subscribe to Events">
+  Choose which events you want to receive notifications for.
+</Step>
+
+<Step title="Receive Notifications">
+  Your endpoint receives HTTP POST requests when events occur.
+</Step>
+
+<Step title="Process Events">
+  Handle the webhook payload and trigger appropriate actions.
+</Step>
+
+<Step title="Acknowledge Receipt">
+  Return a 200 status code to confirm successful processing.
+</Step>
+</Steps>
+
+## Supported Events
+
+### Campaign Events
+- **campaign.created**: New campaign created
+- **campaign.started**: Campaign execution began
+- **campaign.paused**: Campaign was paused
+- **campaign.completed**: Campaign finished successfully
+- **campaign.failed**: Campaign encountered errors
+- **campaign.archived**: Campaign was archived
+
+### Contact Events
+- **contact.added**: New contact added to list
+- **contact.updated**: Contact information updated
+- **contact.removed**: Contact removed from list
+- **contact.opted_out**: Contact unsubscribed from communications
+
+### Message Events
+- **message.sent**: Message successfully sent
+- **message.delivered**: Message delivered to recipient
+- **message.failed**: Message delivery failed
+- **message.opened**: Message was opened (SMS/WhatsApp)
+- **message.clicked**: Link in message was clicked
+- **message.replied**: Recipient replied to message
+
+### System Events
+- **system.maintenance**: Scheduled maintenance notifications
+- **system.rate_limit**: Rate limit warnings
+- **system.error**: System error notifications
+
+## Webhook Payload Structure
+
+All webhook payloads follow a consistent structure:
+
+```json
+{
+  "event": "campaign.started",
+  "timestamp": "2024-01-15T10:30:00Z",
+  "data": {
+    "campaign_id": 12345,
+    "campaign_name": "Summer Sale 2024",
+    "contact_count": 1500,
+    "status": "active"
+  },
+  "metadata": {
+    "webhook_id": "wh_1234567890",
+    "retry_count": 0
+  }
+}
+```
+
+### Payload Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `event` | string | The event type that triggered the webhook |
+| `timestamp` | string | ISO 8601 timestamp of when the event occurred |
+| `data` | object | Event-specific data payload |
+| `metadata` | object | Webhook metadata including retry information |
+
+## Event-Specific Payloads
+
+### Campaign Events
+
+<AccordionGroup>
+<Accordion title="campaign.created">
+```json
+{
+  "event": "campaign.created",
+  "data": {
+    "campaign_id": 12345,
+    "name": "Summer Sale 2024",
+    "type": "sms",
+    "status": "scheduled",
+    "start_date": "2024-06-01",
+    "end_date": "2024-06-30",
+    "contact_count": 0
+  }
+}
+```
+</Accordion>
+
+<Accordion title="campaign.started">
+```json
+{
+  "event": "campaign.started",
+  "data": {
+    "campaign_id": 12345,
+    "name": "Summer Sale 2024",
+    "status": "active",
+    "started_at": "2024-06-01T09:00:00Z",
+    "contact_count": 1500
+  }
+}
+```
+</Accordion>
+
+<Accordion title="campaign.completed">
+```json
+{
+  "event": "campaign.completed",
+  "data": {
+    "campaign_id": 12345,
+    "name": "Summer Sale 2024",
+    "status": "completed",
+    "completed_at": "2024-06-30T17:00:00Z",
+    "total_sent": 1500,
+    "delivery_rate": 98.5,
+    "response_rate": 12.3
+  }
+}
+```
+</Accordion>
+</AccordionGroup>
+
+### Contact Events
+
+<AccordionGroup>
+<Accordion title="contact.added">
+```json
+{
+  "event": "contact.added",
+  "data": {
+    "contact_id": "contact_123",
+    "list_id": 456,
+    "sys_phone": "+1234567890",
+    "attributes": {
+      "first_name": "John",
+      "last_name": "Doe"
+    }
+  }
+}
+```
+</Accordion>
+
+<Accordion title="contact.opted_out">
+```json
+{
+  "event": "contact.opted_out",
+  "data": {
+    "contact_id": "contact_123",
+    "sys_phone": "+1234567890",
+    "opt_out_reason": "unsubscribe",
+    "opted_out_at": "2024-01-15T10:30:00Z"
+  }
+}
+```
+</Accordion>
+</AccordionGroup>
+
+### Message Events
+
+<AccordionGroup>
+<Accordion title="message.sent">
+```json
+{
+  "event": "message.sent",
+  "data": {
+    "message_id": "msg_123456",
+    "campaign_id": 12345,
+    "contact_id": "contact_123",
+    "channel": "sms",
+    "sent_at": "2024-01-15T10:30:00Z"
+  }
+}
+```
+</Accordion>
+
+<Accordion title="message.delivered">
+```json
+{
+  "event": "message.delivered",
+  "data": {
+    "message_id": "msg_123456",
+    "contact_id": "contact_123",
+    "delivered_at": "2024-01-15T10:30:05Z",
+    "delivery_status": "delivered"
+  }
+}
+```
+</Accordion>
+</AccordionGroup>
+
+## Webhook Security
+
+### Signature Verification
+All webhooks include a signature for verification:
+
+```http
+X-Webhook-Signature: sha256=abc123def456...
+```
+
+### Verification Process
+1. Extract the signature from the `X-Webhook-Signature` header
+2. Create a signature using your webhook secret and the request body
+3. Compare the signatures to verify authenticity
+
+<Warning>
+Always verify webhook signatures to ensure requests are from our platform and haven't been tampered with.
+</Warning>
+
+## Retry Logic
+
+### Automatic Retries
+- **Retry Schedule**: 1s, 5s, 30s, 2m, 10m, 1h, 6h, 12h
+- **Maximum Retries**: 8 attempts over 24 hours
+- **Retry Headers**: Include retry count in webhook metadata
+
+### Handling Failures
+- **HTTP 200**: Success, no more retries
+- **HTTP 4xx**: Client error, no retries
+- **HTTP 5xx**: Server error, will retry
+- **Timeout**: 30-second timeout, will retry
+
+## Best Practices
+
+### Endpoint Requirements
+<Tip>
+**Idempotency**: Design your webhook handlers to be idempotent to handle duplicate events safely.
+</Tip>
+
+### Error Handling
+<Warning>
+**Quick Response**: Return a 200 status code quickly, then process the webhook asynchronously if needed.
+</Warning>
+
+### Security
+<Info>
+**HTTPS Only**: Always use HTTPS endpoints for webhook receivers to protect sensitive data.
+</Info>
+
+## Implementation Examples
+
+### Node.js Example
+```javascript
+const express = require('express');
+const crypto = require('crypto');
+
+const app = express();
+app.use(express.raw({ type: 'application/json' }));
+
+app.post('/webhook', (req, res) => {
+  const signature = req.headers['x-webhook-signature'];
+  const payload = req.body;
+
+  // Verify signature
+  const expectedSignature = crypto
+    .createHmac('sha256', process.env.WEBHOOK_SECRET)
+    .update(payload)
+    .digest('hex');
+
+  if (signature !== `sha256=${expectedSignature}`) {
+    return res.status(401).send('Invalid signature');
+  }
+
+  // Process webhook
+  const event = JSON.parse(payload);
+  console.log('Received event:', event.event);
+
+  // Acknowledge receipt
+  res.status(200).send('OK');
+});
+```
+
+### Python Example
+```python
+from flask import Flask, request, jsonify
+import hmac
+import hashlib
+import json
+
+app = Flask(__name__)
+
+@app.route('/webhook', methods=['POST'])
+def webhook():
+    signature = request.headers.get('X-Webhook-Signature')
+    payload = request.get_data()
+
+    # Verify signature
+    expected_signature = hmac.new(
+        WEBHOOK_SECRET.encode(),
+        payload,
+        hashlib.sha256
+    ).hexdigest()
+
+    if signature != f'sha256={expected_signature}':
+        return 'Invalid signature', 401
+
+    # Process webhook
+    event = json.loads(payload)
+    print(f'Received event: {event["event"]}')
+
+    return 'OK', 200
+```
+
+## Testing Webhooks
+
+### Webhook Testing Tools
+- **ngrok**: Expose local endpoints for testing
+- **webhook.site**: Temporary webhook endpoints
+- **Postman**: Test webhook endpoints manually
+
+### Test Events
+Use our webhook testing endpoint to send test events:
+
+```bash
+curl -X POST https://api.example.com/v2/webhooks/test \
+  -H "xi-api-key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"endpoint": "https://your-endpoint.com/webhook"}'
+```
+
+## Common Use Cases
+
+### Real-time Dashboards
+- **Campaign Monitoring**: Live campaign performance updates
+- **Contact Activity**: Real-time contact engagement tracking
+- **System Health**: Monitor platform status and performance
+
+### Automated Workflows
+- **Lead Scoring**: Update lead scores based on campaign interactions
+- **CRM Integration**: Sync campaign data with CRM systems
+- **Notification Systems**: Alert teams about important events
+
+### Analytics Integration
+- **Data Warehousing**: Stream events to data warehouses
+- **Business Intelligence**: Feed data to BI tools for analysis
+- **Custom Reporting**: Build custom analytics dashboards
+
+## Next Steps
+
+- [Campaigns API](/api-reference/campaigns) - Create campaigns to monitor
+- [Contacts API](/api-reference/contacts) - Manage contacts that trigger events
+- [Analytics API](/api-reference/analytics) - Analyze webhook data for insights

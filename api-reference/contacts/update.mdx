@@ -1,0 +1,270 @@
+---
+title: "Update Contact List"
+openapi: 'POST /v2/campaign/contacts/{listId}'
+description: "Update the name of a contact list"
+---
+
+# Update Contact List
+
+Update the name and metadata of a contact list. This endpoint allows you to modify list information while preserving all contact data and relationships.
+
+## Overview
+
+The Update Contact List endpoint enables you to:
+
+- **Rename Lists**: Change the name of existing contact lists
+- **Update Metadata**: Modify list information and descriptions
+- **Maintain Relationships**: Preserve all contact data and campaign associations
+- **List Organization**: Keep your contact lists organized and up-to-date
+- **Data Integrity**: Ensure all list data remains intact during updates
+
+## Examples
+
+### Update List Name
+
+<RequestExample>
+```bash cURL
+curl -X POST 'https://api.example.com/v2/campaign/contacts/123' \
+  -H 'Content-Type: application/json' \
+  -H 'xi-api-key: YOUR_API_KEY' \
+  -d '{
+    "list_name": "Premium VIP Customers"
+  }'
+```
+</RequestExample>
+
+<ResponseExample>
+```json Success Response
+{
+  "status": "success",
+  "message": "Contact list updated successfully"
+}
+```
+</ResponseExample>
+
+### Update List with Descriptive Name
+
+<RequestExample>
+```bash cURL
+curl -X POST 'https://api.example.com/v2/campaign/contacts/124' \
+  -H 'Content-Type: application/json' \
+  -H 'xi-api-key: YOUR_API_KEY' \
+  -d '{
+    "list_name": "Q1 2024 Lead Prospects - Technology Sector"
+  }'
+```
+</RequestExample>
+
+<ResponseExample>
+```json Success Response
+{
+  "status": "success",
+  "message": "Contact list updated successfully"
+}
+```
+</ResponseExample>
+
+### Update List with Clear Naming
+
+<RequestExample>
+```bash cURL
+curl -X POST 'https://api.example.com/v2/campaign/contacts/125' \
+  -H 'Content-Type: application/json' \
+  -H 'xi-api-key: YOUR_API_KEY' \
+  -d '{
+    "list_name": "Newsletter Subscribers - Active"
+  }'
+```
+</RequestExample>
+
+<ResponseExample>
+```json Success Response
+{
+  "status": "success",
+  "message": "Contact list updated successfully"
+}
+```
+</ResponseExample>
+
+## Request Parameters
+
+### Required Fields
+- **list_name**: New name for the contact list (3-200 characters)
+
+### Validation Rules
+- **Minimum Length**: 3 characters
+- **Maximum Length**: 200 characters
+- **Character Restrictions**: Alphanumeric characters, spaces, and common punctuation
+- **Uniqueness**: List names should be unique within your account
+
+## Use Cases
+
+### List Organization
+- **Rename for Clarity**: Update list names to be more descriptive
+- **Seasonal Updates**: Change names to reflect seasonal campaigns
+- **Status Updates**: Update names to reflect current list status
+- **Brand Alignment**: Align list names with current branding
+
+### Campaign Management
+- **Campaign-Specific Names**: Rename lists for specific campaigns
+- **Performance-Based Names**: Update names based on campaign performance
+- **Audience Updates**: Reflect changes in target audience
+- **Testing Names**: Use descriptive names for A/B testing
+
+### Data Maintenance
+- **Cleanup Names**: Standardize list naming conventions
+- **Historical Updates**: Update names to reflect historical context
+- **Compliance Updates**: Ensure names meet compliance requirements
+- **Audit Trail**: Maintain clear audit trail of list changes
+
+## Best Practices
+
+### Naming Conventions
+<Tip>
+**Use Descriptive Names**: Choose names that clearly indicate the list's purpose, audience, and content.
+</Tip>
+
+### Regular Updates
+<Warning>
+**Keep Names Current**: Regularly review and update list names to ensure they remain relevant and descriptive.
+</Warning>
+
+### Consistency
+<Info>
+**Maintain Consistency**: Use consistent naming conventions across all your contact lists for better organization.
+</Info>
+
+## Error Handling
+
+<AccordionGroup>
+<Accordion title="List Not Found">
+  - **Error**: `404 Not Found`
+  - **Cause**: Contact list ID doesn't exist or user doesn't have access
+  - **Solution**: Verify the list ID and ensure you have proper permissions
+</Accordion>
+
+<Accordion title="Invalid List Name">
+  - **Error**: `400 Bad Request - Invalid list name`
+  - **Cause**: List name doesn't meet validation requirements
+  - **Solution**: Ensure list name is 3-200 characters and follows naming rules
+</Accordion>
+
+<Accordion title="Duplicate List Name">
+  - **Error**: `400 Bad Request - List name already exists`
+  - **Cause**: Another list with the same name already exists
+  - **Solution**: Choose a unique name for the list
+</Accordion>
+
+<Accordion title="Access Denied">
+  - **Error**: `403 Forbidden`
+  - **Cause**: User doesn't have permission to update this list
+  - **Solution**: Contact administrator for proper access permissions
+</Accordion>
+</AccordionGroup>
+
+## List Update Workflow
+
+### Planning Phase
+<Steps>
+<Step title="Review Current Name">
+  Assess the current list name and identify improvement opportunities.
+</Step>
+
+<Step title="Choose New Name">
+  Select a descriptive name that clearly indicates the list's purpose.
+</Step>
+
+<Step title="Check Availability">
+  Ensure the new name is unique and available.
+</Step>
+
+<Step title="Plan Update">
+  Plan the update to minimize disruption to ongoing campaigns.
+</Step>
+</Steps>
+
+### Execution Phase
+<Steps>
+<Step title="Backup Data">
+  Ensure you have a backup of important list data.
+</Step>
+
+<Step title="Update List">
+  Submit the list update request to the API.
+</Step>
+
+<Step title="Verify Update">
+  Confirm the list name was updated successfully.
+</Step>
+
+<Step title="Update Documentation">
+  Update any documentation that references the old list name.
+</Step>
+</Steps>
+
+## Naming Best Practices
+
+### Descriptive Names
+Use names that clearly describe the list's purpose:
+
+- **Good**: "Q1 2024 Lead Prospects - Technology Sector"
+- **Bad**: "List 1"
+
+### Audience Indicators
+Include audience information in the name:
+
+- **Good**: "Premium VIP Customers - High Value"
+- **Bad**: "Customers"
+
+### Temporal Context
+Include time-based context when relevant:
+
+- **Good**: "Summer 2024 Campaign - Beach Resorts"
+- **Bad**: "Summer Campaign"
+
+### Status Indicators
+Include status information when applicable:
+
+- **Good**: "Newsletter Subscribers - Active"
+- **Bad**: "Newsletter"
+
+## Monitoring List Updates
+
+### Update Tracking
+- **Change History**: Track all list name changes
+- **User Attribution**: Record who made the changes
+- **Timestamp**: When the changes were made
+- **Reason**: Why the changes were made
+
+### Impact Assessment
+- **Campaign Impact**: Assess impact on ongoing campaigns
+- **Integration Impact**: Check impact on external integrations
+- **Reporting Impact**: Verify impact on reports and analytics
+- **User Impact**: Assess impact on team members
+
+## Integration Considerations
+
+### Campaign Updates
+When updating list names, consider:
+
+- **Active Campaigns**: Check if any campaigns are using the list
+- **Campaign Names**: Update campaign names if they reference the list
+- **Documentation**: Update campaign documentation
+- **Team Communication**: Notify team members of changes
+
+### System Integration
+For external system integrations:
+
+- **CRM Sync**: Update CRM systems with new list names
+- **Reporting Tools**: Update reporting tools and dashboards
+- **Analytics Platforms**: Update analytics platform configurations
+- **Third-party Tools**: Update any third-party tool configurations
+
+## Next Steps
+
+After updating contact lists:
+
+- [Get Contact Lists](/api-reference/contacts/list) - Verify the updated list
+- [Get List Contacts](/api-reference/contacts/get) - View contacts in the updated list
+- [Create Campaign](/api-reference/campaign/create) - Use the updated list in campaigns
+- [Monitor Campaign Performance](/api-reference/analytics) - Track campaign metrics

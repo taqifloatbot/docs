@@ -1,0 +1,339 @@
+---
+title: "Upload Contact List (CSV)"
+openapi: 'POST /v2/campaign/contacts/upload'
+description: "Upload a CSV file to create a contact list"
+---
+
+# Upload Contact List (CSV)
+
+Upload a CSV file to create a new contact list with bulk contact data. This endpoint allows you to import large numbers of contacts efficiently using a standardized CSV format.
+
+## Overview
+
+The Upload Contact List (CSV) endpoint enables you to:
+
+- **Bulk Import**: Import large numbers of contacts at once
+- **CSV Processing**: Automatically process CSV files with contact data
+- **Data Validation**: Validate contact data during import
+- **Error Handling**: Handle import errors gracefully
+- **Progress Tracking**: Monitor import progress and results
+
+## CSV Format Requirements
+
+### Required Columns
+- **sys_phone**: Contact's phone number (required for each row)
+
+### Optional Columns
+You can include any additional columns for contact attributes:
+
+```csv
+sys_phone,first_name,last_name,email,company,industry,customer_tier
++1234567890,John,Doe,john@example.com,Acme Corp,Technology,premium
++1987654321,Jane,Smith,jane@example.com,Tech Inc,Finance,standard
++1555123456,Bob,Johnson,bob@example.com,Startup Co,Healthcare,basic
+```
+
+### CSV Formatting
+- **Headers**: First row should contain column headers
+- **Encoding**: UTF-8 encoding recommended
+- **Delimiter**: Comma-separated values
+- **Quotes**: Use quotes for values containing commas
+- **Line Endings**: Standard line endings (CRLF or LF)
+
+## Examples
+
+### Basic CSV Upload
+
+<RequestExample>
+```bash cURL
+curl -X POST 'https://api.example.com/v2/campaign/contacts/upload' \
+  -H 'xi-api-key: YOUR_API_KEY' \
+  -F 'file=@contacts.csv' \
+  -F 'list_name=Imported Contacts'
+```
+</RequestExample>
+
+<ResponseExample>
+```json Success Response
+{
+  "listId": 126,
+  "imported_count": 250,
+  "message": "CSV uploaded successfully"
+}
+```
+</ResponseExample>
+
+### CSV with Custom Attributes
+
+<RequestExample>
+```bash cURL
+curl -X POST 'https://api.example.com/v2/campaign/contacts/upload' \
+  -H 'xi-api-key: YOUR_API_KEY' \
+  -F 'file=@custom_contacts.csv' \
+  -F 'list_name=High-Value Prospects'
+```
+</RequestExample>
+
+<ResponseExample>
+```json Success Response
+{
+  "listId": 127,
+  "imported_count": 150,
+  "message": "CSV uploaded successfully"
+}
+```
+</ResponseExample>
+
+### Large CSV Upload
+
+<RequestExample>
+```bash cURL
+curl -X POST 'https://api.example.com/v2/campaign/contacts/upload' \
+  -H 'xi-api-key: YOUR_API_KEY' \
+  -F 'file=@large_contacts.csv' \
+  -F 'list_name=Enterprise Customers'
+```
+</RequestExample>
+
+<ResponseExample>
+```json Success Response
+{
+  "listId": 128,
+  "imported_count": 5000,
+  "message": "CSV uploaded successfully"
+}
+```
+</ResponseExample>
+
+## CSV File Examples
+
+### Basic Contact List
+```csv
+sys_phone,first_name,last_name,email
++1234567890,John,Doe,john@example.com
++1987654321,Jane,Smith,jane@example.com
++1555123456,Bob,Johnson,bob@example.com
+```
+
+### Detailed Contact List
+```csv
+sys_phone,first_name,last_name,email,company,industry,customer_tier,lead_score,source
++1234567890,John,Doe,john@example.com,Acme Corp,Technology,premium,95,website
++1987654321,Jane,Smith,jane@example.com,Tech Inc,Finance,standard,75,referral
++1555123456,Bob,Johnson,bob@example.com,Startup Co,Healthcare,basic,60,event
+```
+
+### International Contact List
+```csv
+sys_phone,first_name,last_name,email,company,country,language
++1234567890,John,Doe,john@example.com,Acme Corp,USA,en
++33123456789,Marie,Martin,marie@example.com,Paris Corp,France,fr
++49123456789,Hans,Müller,hans@example.com,Berlin Corp,Germany,de
+```
+
+## Data Validation
+
+### Phone Number Validation
+- **Format**: Phone numbers are automatically cleaned to digits only
+- **Validation**: Invalid phone numbers are rejected
+- **Duplicates**: Duplicate phone numbers within the same list are rejected
+- **International**: Supports international phone number formats
+
+### Attribute Validation
+- **Data Types**: Attributes are stored as strings
+- **Length Limits**: Some attributes may have length limits
+- **Special Characters**: Special characters are handled appropriately
+- **Encoding**: UTF-8 encoding is preserved
+
+## Use Cases
+
+### Data Migration
+- **CRM Import**: Import contacts from CRM systems
+- **Legacy Data**: Migrate data from legacy systems
+- **System Integration**: Integrate with external data sources
+- **Data Consolidation**: Combine data from multiple sources
+
+### Campaign Preparation
+- **Bulk List Creation**: Create large contact lists for campaigns
+- **Segmentation**: Import segmented contact data
+- **Testing Lists**: Create test lists for campaign testing
+- **Audience Building**: Build large audiences for campaigns
+
+### Data Management
+- **Data Cleanup**: Import cleaned and validated data
+- **Data Enrichment**: Import enriched contact data
+- **Data Standardization**: Standardize contact data formats
+- **Data Backup**: Restore contact data from backups
+
+## Best Practices
+
+### CSV Preparation
+<Tip>
+**Validate Data**: Always validate your CSV data before uploading to ensure quality and avoid errors.
+</Tip>
+
+### File Management
+<Warning>
+**File Size**: Be mindful of file size limits and processing time for large CSV files.
+</Warning>
+
+### Data Quality
+<Info>
+**Clean Data**: Ensure your CSV data is clean and properly formatted for the best import results.
+</Info>
+
+## Error Handling
+
+<AccordionGroup>
+<Accordion title="Invalid CSV Format">
+  - **Error**: `400 Bad Request - CSV Parse error`
+  - **Cause**: CSV file is not properly formatted or readable
+  - **Solution**: Ensure CSV file is properly formatted with correct headers and data
+</Accordion>
+
+<Accordion title="Missing Required Column">
+  - **Error**: `400 Bad Request - Missing sys_phone column`
+  - **Cause**: CSV file doesn't contain the required sys_phone column
+  - **Solution**: Add sys_phone column to your CSV file
+</Accordion>
+
+<Accordion title="No Valid Contacts">
+  - **Error**: `400 Bad Request - No Contacts with a valid sys_phone found`
+  - **Cause**: All contacts in the CSV have invalid phone numbers
+  - **Solution**: Ensure at least one contact has a valid phone number
+</Accordion>
+
+<Accordion title="File Too Large">
+  - **Error**: `400 Bad Request - File too large`
+  - **Cause**: CSV file exceeds size limits
+  - **Solution**: Split the file into smaller chunks or compress the file
+</Accordion>
+</AccordionGroup>
+
+## CSV Upload Workflow
+
+### Preparation Phase
+<Steps>
+<Step title="Prepare Data">
+  Gather and organize your contact data.
+</Step>
+
+<Step title="Format CSV">
+  Format the data as a properly structured CSV file.
+</Step>
+
+<Step title="Validate Data">
+  Check data quality and ensure all required fields are present.
+</Step>
+
+<Step title="Test Format">
+  Verify the CSV format is correct and readable.
+</Step>
+</Steps>
+
+### Upload Phase
+<Steps>
+<Step title="Choose List Name">
+  Select a descriptive name for the contact list.
+</Step>
+
+<Step title="Upload File">
+  Upload the CSV file using the API endpoint.
+</Step>
+
+<Step title="Monitor Progress">
+  Track the upload progress and handle any errors.
+</Step>
+
+<Step title="Verify Results">
+  Confirm the contacts were imported successfully.
+</Step>
+</Steps>
+
+## Performance Considerations
+
+### Large Files
+- **File Size Limits**: Be aware of file size limits for uploads
+- **Processing Time**: Large files may take longer to process
+- **Memory Usage**: Large files may require more memory
+- **Timeout Handling**: Implement proper timeout handling
+
+### Batch Processing
+- **Chunking**: Consider splitting very large files into chunks
+- **Parallel Processing**: Use parallel processing for multiple files
+- **Progress Tracking**: Implement progress tracking for long uploads
+- **Error Recovery**: Handle errors gracefully during processing
+
+## Monitoring Upload Progress
+
+### Success Metrics
+- **Contacts Imported**: Number of contacts successfully imported
+- **Import Rate**: Rate of successful contact imports
+- **Error Rate**: Percentage of contacts that failed to import
+- **Processing Time**: Time taken to process the upload
+
+### Error Tracking
+- **Validation Errors**: Track data validation errors
+- **Format Errors**: Monitor CSV format issues
+- **Duplicate Errors**: Track duplicate phone number errors
+- **System Errors**: Monitor system-level errors
+
+## Integration Examples
+
+### Python Upload Script
+```python
+import requests
+import csv
+
+# Prepare CSV data
+contacts = [
+    {"sys_phone": "+1234567890", "first_name": "John", "last_name": "Doe"},
+    {"sys_phone": "+1987654321", "first_name": "Jane", "last_name": "Smith"}
+]
+
+# Write to CSV
+with open('contacts.csv', 'w', newline='') as csvfile:
+    writer = csv.DictWriter(csvfile, fieldnames=['sys_phone', 'first_name', 'last_name'])
+    writer.writeheader()
+    writer.writerows(contacts)
+
+# Upload CSV
+with open('contacts.csv', 'rb') as f:
+    files = {'file': f}
+    data = {'list_name': 'Python Import'}
+    response = requests.post(
+        'https://api.example.com/v2/campaign/contacts/upload',
+        headers={'xi-api-key': 'YOUR_API_KEY'},
+        files=files,
+        data=data
+    )
+    print(response.json())
+```
+
+### JavaScript Upload
+```javascript
+// Upload CSV file
+const formData = new FormData();
+formData.append('file', csvFile);
+formData.append('list_name', 'JavaScript Import');
+
+const response = await fetch('/v2/campaign/contacts/upload', {
+  method: 'POST',
+  headers: {
+    'xi-api-key': 'YOUR_API_KEY'
+  },
+  body: formData
+});
+
+const result = await response.json();
+console.log('Upload result:', result);
+```
+
+## Next Steps
+
+After uploading contact lists:
+
+- [Get Contact Lists](/api-reference/contacts/list) - View all your contact lists
+- [Get List Contacts](/api-reference/contacts/get) - Verify imported contacts
+- [Create Campaign](/api-reference/campaign/create) - Use the list in campaigns
+- [Monitor Campaign Performance](/api-reference/analytics) - Track campaign metrics

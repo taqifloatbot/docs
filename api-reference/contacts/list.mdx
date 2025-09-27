@@ -1,0 +1,241 @@
+---
+title: "Get Contact Lists"
+openapi: 'GET /v2/campaign/contacts'
+description: "Retrieve all contact lists for the authenticated user"
+---
+
+# Get Contact Lists
+
+Retrieve all contact lists associated with your account. This endpoint provides a comprehensive view of your contact organization and management capabilities.
+
+## Overview
+
+The Get Contact Lists endpoint allows you to:
+
+- **View All Lists**: See all contact lists in your account
+- **List Information**: Get details about each list including size and creation date
+- **List Management**: Understand your contact organization structure
+- **Campaign Planning**: Identify which lists to use for campaigns
+
+## Examples
+
+### Basic Contact List Retrieval
+
+<RequestExample>
+```bash cURL
+curl -X GET 'https://api.example.com/v2/campaign/contacts' \
+  -H 'xi-api-key: YOUR_API_KEY'
+```
+</RequestExample>
+
+<ResponseExample>
+```json Success Response
+[
+  {
+    "id": 1,
+    "list_name": "VIP Customers",
+    "created_at": "2024-01-15T10:30:00Z",
+    "contact_count": 150,
+    "last_updated": "2024-01-20T14:22:00Z"
+  },
+  {
+    "id": 2,
+    "list_name": "Newsletter Subscribers",
+    "created_at": "2024-01-10T14:20:00Z",
+    "contact_count": 500,
+    "last_updated": "2024-01-18T09:15:00Z"
+  },
+  {
+    "id": 3,
+    "list_name": "Lead Prospects",
+    "created_at": "2024-01-05T08:45:00Z",
+    "contact_count": 250,
+    "last_updated": "2024-01-19T16:30:00Z"
+  }
+]
+```
+</ResponseExample>
+
+### Empty Account Response
+
+<RequestExample>
+```bash cURL
+curl -X GET 'https://api.example.com/v2/campaign/contacts' \
+  -H 'xi-api-key: YOUR_API_KEY'
+```
+</RequestExample>
+
+<ResponseExample>
+```json Empty Response
+[]
+```
+</ResponseExample>
+
+## Response Fields
+
+### Contact List Information
+- **id**: Unique identifier for the contact list
+- **list_name**: Name of the contact list
+- **created_at**: When the list was created
+- **contact_count**: Number of contacts in the list
+- **last_updated**: When the list was last modified
+
+### List Metadata
+- **Creation Date**: When the list was originally created
+- **Last Updated**: Most recent modification timestamp
+- **Contact Count**: Current number of contacts in the list
+- **List Status**: Whether the list is active or archived
+
+## Use Cases
+
+### Campaign Planning
+- **List Selection**: Choose which contact lists to use for campaigns
+- **Audience Sizing**: Understand the size of your target audiences
+- **List Comparison**: Compare different contact lists for campaign planning
+- **Resource Planning**: Plan campaign resources based on list sizes
+
+### Contact Management
+- **List Overview**: Get a high-level view of all your contact lists
+- **List Organization**: Understand how your contacts are organized
+- **List Maintenance**: Identify lists that need attention or updates
+- **List Cleanup**: Find lists that may need archiving or cleanup
+
+### Reporting and Analytics
+- **List Performance**: Track which lists perform best in campaigns
+- **Growth Tracking**: Monitor how your contact lists grow over time
+- **List Utilization**: See which lists are used most frequently
+- **Contact Distribution**: Understand how contacts are distributed across lists
+
+## Best Practices
+
+### List Organization
+<Tip>
+**Use Descriptive Names**: Give your contact lists clear, descriptive names that indicate their purpose.
+</Tip>
+
+### Regular Monitoring
+<Warning>
+**Monitor List Health**: Regularly check list sizes and update frequencies to maintain data quality.
+</Warning>
+
+### List Maintenance
+<Info>
+**Archive Old Lists**: Archive or delete contact lists that are no longer relevant to keep your account organized.
+</Info>
+
+## Error Handling
+
+<AccordionGroup>
+<Accordion title="Authentication Error">
+  - **Error**: `401 Unauthorized`
+  - **Cause**: Invalid or missing API key
+  - **Solution**: Verify your API key and ensure it's included in the request header
+</Accordion>
+
+<Accordion title="Access Denied">
+  - **Error**: `403 Forbidden`
+  - **Cause**: User doesn't have permission to access contact lists
+  - **Solution**: Contact administrator for proper access permissions
+</Accordion>
+
+<Accordion title="Server Error">
+  - **Error**: `500 Internal Server Error`
+  - **Cause**: Server-side error occurred
+  - **Solution**: Retry the request or contact support if the issue persists
+</Accordion>
+</AccordionGroup>
+
+## List Management Workflow
+
+### Regular List Review
+<Steps>
+<Step title="Review Lists">
+  Regularly review all contact lists to ensure they're up to date.
+</Step>
+
+<Step title="Check Sizes">
+  Monitor list sizes to identify growth or decline patterns.
+</Step>
+
+<Step title="Update Names">
+  Ensure list names clearly indicate their purpose and content.
+</Step>
+
+<Step title="Archive Old Lists">
+  Archive or delete lists that are no longer relevant.
+</Step>
+</Steps>
+
+### Campaign Preparation
+<Steps>
+<Step title="Identify Target Lists">
+  Choose the appropriate contact lists for your campaign.
+</Step>
+
+<Step title="Verify List Sizes">
+  Ensure lists have sufficient contacts for your campaign goals.
+</Step>
+
+<Step title="Check List Health">
+  Verify lists are active and up to date.
+</Step>
+
+<Step title="Plan Campaign">
+  Use list information to plan your campaign strategy.
+</Step>
+</Steps>
+
+## Performance Considerations
+
+### Response Time
+- **Fast Retrieval**: Contact list information is cached for quick access
+- **Minimal Data**: Only essential information is returned for performance
+- **Efficient Queries**: Optimized database queries for fast response times
+
+### Data Freshness
+- **Real-time Counts**: Contact counts are updated in real-time
+- **Cached Metadata**: List metadata is cached for performance
+- **Consistent Data**: All list information is consistent across requests
+
+## Integration Examples
+
+### Dashboard Integration
+```javascript
+// Fetch contact lists for dashboard display
+const response = await fetch('/v2/campaign/contacts', {
+  headers: {
+    'xi-api-key': 'YOUR_API_KEY'
+  }
+});
+const lists = await response.json();
+
+// Display lists in dashboard
+lists.forEach(list => {
+  console.log(`${list.list_name}: ${list.contact_count} contacts`);
+});
+```
+
+### Campaign Planning
+```python
+import requests
+
+# Get contact lists for campaign planning
+response = requests.get(
+    'https://api.example.com/v2/campaign/contacts',
+    headers={'xi-api-key': 'YOUR_API_KEY'}
+)
+lists = response.json()
+
+# Find the best list for campaign
+best_list = max(lists, key=lambda x: x['contact_count'])
+print(f"Best list for campaign: {best_list['list_name']}")
+```
+
+## Next Steps
+
+After retrieving contact lists:
+
+- [Create Contact List](/api-reference/contacts/create) - Create new contact lists
+- [Get List Contacts](/api-reference/contacts/get) - View contacts in specific lists
+- [Update Contact List](/api-reference/contacts/update) - Modify list information
+- [Create Campaign](/api-reference/campaign/create) - Use lists in campaigns

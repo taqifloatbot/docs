@@ -1,0 +1,314 @@
+---
+title: "Update Campaign Contacts"
+openapi: 'POST /v2/campaign/{campaignId}/contacts'
+description: "Add or update contacts for a specific campaign"
+---
+
+# Update Campaign Contacts
+
+Add or update contacts for a specific campaign. This endpoint allows you to manage the target audience for your campaigns by adding new contacts or updating existing ones.
+
+## Overview
+
+The Update Campaign Contacts endpoint enables you to:
+
+- **Add New Contacts**: Include additional contacts in your campaign
+- **Update Contact Information**: Modify existing contact details
+- **Bulk Contact Management**: Add multiple contacts at once
+- **Contact Validation**: Ensure contact data is valid before adding
+- **Duplicate Prevention**: Avoid adding duplicate contacts
+
+## Contact Management
+
+### Adding Contacts
+Add new contacts to your campaign with their details:
+
+<Steps>
+<Step title="Prepare Contact Data">
+  Gather contact information including phone numbers and attributes.
+</Step>
+
+<Step title="Validate Phone Numbers">
+  Ensure phone numbers are in the correct format and valid.
+</Step>
+
+<Step title="Add Attributes">
+  Include any custom attributes for personalization.
+</Step>
+
+<Step title="Submit to Campaign">
+  Send contact data to the campaign endpoint.
+</Step>
+
+<Step title="Verify Addition">
+  Confirm contacts were added successfully.
+</Step>
+</Steps>
+
+### Contact Validation
+All contacts must meet these requirements:
+
+- **Valid Phone Number**: Must have a valid `sys_phone` field
+- **Unique Phone Numbers**: No duplicate phone numbers in the same campaign
+- **Proper Format**: Phone numbers are automatically cleaned to digits only
+- **Required Fields**: `sys_phone` is the only required field
+
+## Examples
+
+### Add Single Contact
+
+<RequestExample>
+```bash cURL
+curl -X POST 'https://api.example.com/v2/campaign/12345/contacts' \
+  -H 'Content-Type: application/json' \
+  -H 'xi-api-key: YOUR_API_KEY' \
+  -d '{
+    "contacts": [
+      {
+        "sys_phone": "+1234567890",
+        "first_name": "John",
+        "last_name": "Doe",
+        "email": "john@example.com",
+        "company": "Acme Corp"
+      }
+    ]
+  }'
+```
+</RequestExample>
+
+<ResponseExample>
+```json Success Response
+{
+  "currentCampaignStatus": "updated",
+  "message": "Campaign contacts updated successfully",
+  "contactsAdded": 1,
+  "totalContacts": 1501
+}
+```
+</ResponseExample>
+
+### Add Multiple Contacts
+
+<RequestExample>
+```bash cURL
+curl -X POST 'https://api.example.com/v2/campaign/12345/contacts' \
+  -H 'Content-Type: application/json' \
+  -H 'xi-api-key: YOUR_API_KEY' \
+  -d '{
+    "contacts": [
+      {
+        "sys_phone": "+1234567890",
+        "first_name": "John",
+        "last_name": "Doe",
+        "email": "john@example.com"
+      },
+      {
+        "sys_phone": "+1987654321",
+        "first_name": "Jane",
+        "last_name": "Smith",
+        "email": "jane@example.com"
+      },
+      {
+        "sys_phone": "+1555123456",
+        "first_name": "Bob",
+        "last_name": "Johnson",
+        "email": "bob@example.com"
+      }
+    ]
+  }'
+```
+</RequestExample>
+
+<ResponseExample>
+```json Success Response
+{
+  "currentCampaignStatus": "updated",
+  "message": "Campaign contacts updated successfully",
+  "contactsAdded": 3,
+  "totalContacts": 1503
+}
+```
+</ResponseExample>
+
+### Add Contacts with Custom Attributes
+
+<RequestExample>
+```bash cURL
+curl -X POST 'https://api.example.com/v2/campaign/12345/contacts' \
+  -H 'Content-Type: application/json' \
+  -H 'xi-api-key: YOUR_API_KEY' \
+  -d '{
+    "contacts": [
+      {
+        "sys_phone": "+1234567890",
+        "first_name": "John",
+        "last_name": "Doe",
+        "email": "john@example.com",
+        "company": "Acme Corp",
+        "industry": "Technology",
+        "preferred_language": "en",
+        "customer_tier": "premium",
+        "last_purchase": "2024-01-15"
+      }
+    ]
+  }'
+```
+</RequestExample>
+
+<ResponseExample>
+```json Success Response
+{
+  "currentCampaignStatus": "updated",
+  "message": "Campaign contacts updated successfully",
+  "contactsAdded": 1,
+  "totalContacts": 1504
+}
+```
+</ResponseExample>
+
+## Contact Data Structure
+
+### Required Fields
+- **sys_phone**: Contact's phone number (required)
+
+### Optional Fields
+You can include any additional attributes:
+
+```json
+{
+  "sys_phone": "+1234567890",
+  "first_name": "John",
+  "last_name": "Doe",
+  "email": "john@example.com",
+  "company": "Acme Corp",
+  "industry": "Technology",
+  "preferred_language": "en",
+  "customer_tier": "premium",
+  "last_purchase": "2024-01-15",
+  "custom_field": "custom_value"
+}
+```
+
+### Phone Number Formatting
+Phone numbers are automatically cleaned:
+
+- **Input**: `+1 (234) 567-8900`
+- **Cleaned**: `12345678900`
+- **Stored**: `12345678900`
+
+<Warning>
+**Phone Validation**: Ensure phone numbers are valid and reachable to avoid campaign failures.
+</Warning>
+
+## Use Cases
+
+### Campaign Expansion
+- **Add New Leads**: Include newly acquired leads in existing campaigns
+- **Expand Audience**: Increase campaign reach by adding more contacts
+- **Segment Addition**: Add new customer segments to campaigns
+
+### Contact Updates
+- **Update Information**: Modify existing contact details
+- **Add Attributes**: Include new custom attributes for personalization
+- **Correct Data**: Fix incorrect contact information
+
+### Bulk Operations
+- **Import Lists**: Add large numbers of contacts from external sources
+- **Merge Campaigns**: Combine contacts from multiple campaigns
+- **Data Migration**: Move contacts between campaigns
+
+## Best Practices
+
+### Data Quality
+<Tip>
+**Validate Data**: Always validate contact data before adding to campaigns to ensure quality.
+</Tip>
+
+### Phone Number Management
+<Warning>
+**Avoid Duplicates**: Check for duplicate phone numbers to prevent sending multiple messages to the same contact.
+</Warning>
+
+### Attribute Management
+<Info>
+**Use Consistent Attributes**: Maintain consistent attribute names and values across campaigns for better personalization.
+</Info>
+
+## Error Handling
+
+<AccordionGroup>
+<Accordion title="Invalid Phone Numbers">
+  - **Error**: `400 Bad Request - Invalid phone number format`
+  - **Cause**: Phone numbers that can't be cleaned or validated
+  - **Solution**: Ensure phone numbers are in international format
+</Accordion>
+
+<Accordion title="Duplicate Phone Numbers">
+  - **Error**: `400 Bad Request - Duplicate sys_phone found`
+  - **Cause**: Multiple contacts with the same phone number
+  - **Solution**: Remove duplicates before adding or use update operations
+</Accordion>
+
+<Accordion title="Campaign Not Found">
+  - **Error**: `404 Not Found`
+  - **Cause**: Campaign ID doesn't exist or user doesn't have access
+  - **Solution**: Verify the campaign ID and ensure you have proper permissions
+</Accordion>
+
+<Accordion title="No Valid Contacts">
+  - **Error**: `400 Bad Request - No Contacts with a valid sys_phone found`
+  - **Cause**: All contacts in the request have invalid phone numbers
+  - **Solution**: Ensure at least one contact has a valid phone number
+</Accordion>
+</AccordionGroup>
+
+## Performance Considerations
+
+### Bulk Operations
+- **Batch Size**: Process contacts in batches for better performance
+- **Rate Limits**: Be mindful of API rate limits when adding large numbers of contacts
+- **Async Processing**: Large contact additions may be processed asynchronously
+
+### Data Validation
+- **Pre-validation**: Validate contact data before sending to the API
+- **Error Handling**: Implement proper error handling for failed contact additions
+- **Retry Logic**: Use retry logic for transient failures
+
+## Contact Management Workflow
+
+### Adding Contacts
+1. **Prepare Data**: Gather and validate contact information
+2. **Format Data**: Ensure data is in the correct format
+3. **Send Request**: Submit contact data to the API
+4. **Verify Success**: Confirm contacts were added successfully
+5. **Monitor Campaign**: Track campaign performance with new contacts
+
+### Updating Contacts
+1. **Identify Changes**: Determine what contact information needs updating
+2. **Prepare Updates**: Format the updated contact data
+3. **Submit Changes**: Send updates to the API
+4. **Verify Updates**: Confirm changes were applied successfully
+5. **Test Campaign**: Ensure updated contacts receive campaign messages
+
+## Monitoring Contact Additions
+
+### Success Metrics
+- **Contacts Added**: Number of contacts successfully added
+- **Total Contacts**: Total number of contacts in the campaign
+- **Success Rate**: Percentage of contacts added successfully
+- **Error Rate**: Percentage of contacts that failed to add
+
+### Performance Tracking
+- **Processing Time**: Time taken to process contact additions
+- **Throughput**: Number of contacts processed per minute
+- **Error Frequency**: Rate of errors during contact addition
+- **System Load**: Impact on system performance
+
+## Next Steps
+
+After updating campaign contacts:
+
+- [Get Campaign Details](/api-reference/campaign/get) - Verify contact additions
+- [Monitor Campaign Performance](/api-reference/analytics) - Track campaign metrics
+- [Create Contact Lists](/api-reference/contacts/create) - Organize contacts into lists
+- [Archive Campaign](/api-reference/campaign/archive) - Complete campaign lifecycle

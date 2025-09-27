@@ -1,0 +1,198 @@
+---
+title: "Contacts API"
+description: "Manage contact lists and individual contacts for your campaigns"
+---
+
+# Contacts API
+
+The Contacts API provides comprehensive functionality for managing contact lists and individual contacts. This API is essential for organizing your audience and preparing them for marketing campaigns.
+
+## Overview
+
+Contact management is the foundation of effective marketing campaigns. The Contacts API enables you to:
+
+- **Create and manage contact lists** for organizing your audience
+- **Import contacts in bulk** using CSV uploads
+- **Store custom attributes** for personalized messaging
+- **Archive and manage contacts** throughout their lifecycle
+- **Export contact data** for analysis and reporting
+
+## Contact Lists
+
+Contact lists are collections of contacts that can be used in campaigns. Each list can contain:
+
+- **Unlimited contacts** (subject to your plan limits)
+- **Custom attributes** for each contact
+- **Metadata** like creation date and list name
+- **Status tracking** for contact engagement
+
+### List Management
+
+<Steps>
+<Step title="Create a List">
+  Start by creating a new contact list with a descriptive name.
+</Step>
+
+<Step title="Add Contacts">
+  Populate the list with contacts, either individually or via CSV upload.
+</Step>
+
+<Step title="Configure Attributes">
+  Define custom attributes for personalized messaging and segmentation.
+</Step>
+
+<Step title="Use in Campaigns">
+  Assign the list to campaigns for targeted messaging.
+</Step>
+</Steps>
+
+## Contact Attributes
+
+Contacts can have unlimited custom attributes beyond the required `sys_phone` field:
+
+### Standard Attributes
+- **sys_phone**: Contact's phone number (required)
+- **date_added**: When the contact was added to the list
+- **created_at**: Contact creation timestamp
+
+### Custom Attributes
+You can add any custom attributes to contacts:
+
+```json
+{
+  "sys_phone": "+1234567890",
+  "first_name": "John",
+  "last_name": "Doe",
+  "email": "john@example.com",
+  "company": "Acme Corp",
+  "industry": "Technology",
+  "preferred_language": "en"
+}
+```
+
+<Info>
+Custom attributes are stored as key-value pairs and can be used for personalization in campaigns.
+</Info>
+
+## CSV Import
+
+Bulk contact import is supported via CSV upload:
+
+### CSV Format Requirements
+- **Required column**: `sys_phone` (contact's phone number)
+- **Optional columns**: Any additional attributes
+- **File format**: CSV with headers
+- **Encoding**: UTF-8 recommended
+
+### Example CSV
+```csv
+sys_phone,first_name,last_name,email,company
++1234567890,John,Doe,john@example.com,Acme Corp
++1987654321,Jane,Smith,jane@example.com,Tech Inc
++1555123456,Bob,Johnson,bob@example.com,Startup Co
+```
+
+<Warning>
+Phone numbers will be automatically cleaned to digits only. Ensure your CSV contains valid phone numbers.
+</Warning>
+
+## Contact Lifecycle
+
+<Steps>
+<Step title="Import/Add">
+  Contacts are added to lists via API or CSV upload.
+</Step>
+
+<Step title="Validate">
+  Phone numbers are validated and cleaned automatically.
+</Step>
+
+<Step title="Store Attributes">
+  Custom attributes are stored for personalization.
+</Step>
+
+<Step title="Use in Campaigns">
+  Contacts are used in targeted marketing campaigns.
+</Step>
+
+<Step title="Track Engagement">
+  Monitor contact engagement and campaign responses.
+</Step>
+
+<Step title="Archive/Remove">
+  Contacts can be archived or removed as needed.
+</Step>
+</Steps>
+
+## Best Practices
+
+### Contact Organization
+<Tip>
+**Segmentation**: Create separate lists for different audience segments (e.g., customers, prospects, VIPs).
+</Tip>
+
+### Data Quality
+<Warning>
+**Phone Validation**: Always validate phone numbers before importing to avoid campaign failures.
+</Warning>
+
+### Privacy Compliance
+<Info>
+**GDPR/CCPA**: Ensure you have proper consent for marketing communications and respect opt-out requests.
+</Info>
+
+## Common Use Cases
+
+### Customer Segmentation
+- **VIP Customers**: High-value customers with premium service
+- **New Customers**: Recent acquisitions requiring onboarding
+- **Churned Customers**: Win-back campaigns for inactive users
+
+### Geographic Targeting
+- **Regional Lists**: Contacts organized by location for local campaigns
+- **Timezone Groups**: Contacts grouped by timezone for optimal scheduling
+
+### Behavioral Segmentation
+- **Engaged Users**: Active participants in previous campaigns
+- **Inactive Users**: Contacts who haven't responded to recent campaigns
+- **High-Value Prospects**: Contacts with high conversion potential
+
+## Error Handling
+
+<AccordionGroup>
+<Accordion title="Invalid Phone Numbers">
+  - **Error**: `400 Bad Request - Invalid phone number format`
+  - **Cause**: Phone numbers that can't be cleaned or validated
+  - **Solution**: Ensure phone numbers are in international format
+</Accordion>
+
+<Accordion title="Duplicate Contacts">
+  - **Error**: `400 Bad Request - Duplicate sys_phone found`
+  - **Cause**: Multiple contacts with the same phone number
+  - **Solution**: Remove duplicates before importing or use update operations
+</Accordion>
+
+<Accordion title="List Not Found">
+  - **Error**: `404 Not Found - Contact list not found`
+  - **Cause**: Attempting to access a non-existent or archived list
+  - **Solution**: Verify the list ID and ensure the list hasn't been archived
+</Accordion>
+</AccordionGroup>
+
+## Performance Considerations
+
+### Large Contact Lists
+- **Pagination**: Use pagination for large contact lists
+- **Batch Operations**: Process contacts in batches for better performance
+- **Async Operations**: Some operations may be processed asynchronously
+
+### Storage Limits
+- **Plan Limits**: Contact limits vary by subscription plan
+- **Attribute Limits**: Custom attributes have storage limits
+- **File Size**: CSV uploads are limited by file size
+
+## Next Steps
+
+- [Campaigns API](/api-reference/campaigns) - Use your contacts in campaigns
+- [Analytics API](/api-reference/analytics) - Track contact engagement
+- [Webhooks](/api-reference/webhooks) - Real-time contact updates

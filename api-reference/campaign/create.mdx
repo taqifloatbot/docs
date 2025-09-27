@@ -1,0 +1,255 @@
+---
+title: "Create Campaign V2"
+openapi: 'POST /v2/campaign/create'
+description: "Create a new marketing campaign with advanced scheduling and timezone support"
+---
+
+# Create Campaign V2
+
+Create a new marketing campaign with advanced scheduling, timezone support, and multi-channel capabilities. This endpoint supports phone, SMS, and WhatsApp campaigns with intelligent scheduling.
+
+## Overview
+
+The Create Campaign V2 endpoint allows you to set up sophisticated marketing campaigns with:
+
+- **Multi-channel support** (phone, SMS, WhatsApp)
+- **Advanced scheduling** with timezone awareness
+- **Flexible contact targeting** using contact lists
+- **Custom attributes** for personalized messaging
+- **Intelligent bot integration** for interactive campaigns
+
+## Campaign Types
+
+<CardGroup cols={3}>
+<Card title="Phone Campaigns" icon="phone">
+  Voice-based campaigns with interactive bot conversations, call recording, and human handoff capabilities.
+</Card>
+
+<Card title="SMS Campaigns" icon="message">
+  Text message campaigns with support for media attachments, rich messaging, and link tracking.
+</Card>
+
+<Card title="WhatsApp Campaigns" icon="whatsapp">
+  WhatsApp Business API campaigns with template messaging, media support, and interactive buttons.
+</Card>
+</CardGroup>
+
+## Key Features
+
+### Advanced Scheduling
+- **Timezone Support**: Schedule campaigns in any timezone for global reach
+- **Recurring Campaigns**: Set up campaigns that run on specific days of the week
+- **Time-based Execution**: Define precise start and end times for optimal engagement
+- **Date Range**: Set campaign duration with flexible start and end dates
+
+### Multi-Channel Configuration
+- **Channel-specific Settings**: Optimize configurations for each channel type
+- **Template Management**: Use pre-approved templates for WhatsApp campaigns
+- **Bot Integration**: Connect intelligent bots for interactive conversations
+- **Media Support**: Include images, videos, and documents in campaigns
+
+## Examples
+
+### Phone Campaign Example
+
+<RequestExample>
+```bash cURL
+curl -X POST 'https://api.example.com/v2/campaign/create' \
+  -H 'Content-Type: application/json' \
+  -H 'xi-api-key: YOUR_API_KEY' \
+  -d '{
+    "type": "phone",
+    "name": "Lead Qualification Campaign",
+    "bot_id": "507f1f77bcf86cd799439011",
+    "sip_caller_id": {
+      "n": "+1234567890",
+      "type": "phone"
+    },
+    "list_ids": [1, 2, 3],
+    "days": [1, 2, 3, 4, 5],
+    "start_date": "2024-06-01",
+    "end_date": "2024-06-30",
+    "start_time": "09:00:00",
+    "end_time": "17:00:00",
+    "timezone": "America/New_York"
+  }'
+```
+</RequestExample>
+
+<ResponseExample>
+```json Success Response
+{
+  "campaignId": 12345
+}
+```
+</ResponseExample>
+
+### SMS Campaign Example
+
+<RequestExample>
+```bash cURL
+curl -X POST 'https://api.example.com/v2/campaign/create' \
+  -H 'Content-Type: application/json' \
+  -H 'xi-api-key: YOUR_API_KEY' \
+  -d '{
+    "type": "sms",
+    "name": "Product Launch SMS",
+    "bot_id": "507f1f77bcf86cd799439011",
+    "sip_caller_id": {
+      "n": "+1234567890",
+      "type": "phone"
+    },
+    "list_ids": [4, 5],
+    "days": [1, 2, 3, 4, 5, 6, 0],
+    "start_date": "2024-06-15",
+    "end_date": "2024-06-20",
+    "start_time": "10:00:00",
+    "end_time": "18:00:00",
+    "timezone": "America/Los_Angeles",
+    "meta_data": {
+      "text": "🎉 New Product Launch! Get 50% off our premium features. Limited time offer!",
+      "media_urls": [
+        "https://example.com/images/product-launch.jpg"
+      ]
+    }
+  }'
+```
+</RequestExample>
+
+### WhatsApp Campaign Example
+
+<RequestExample>
+```bash cURL
+curl -X POST 'https://api.example.com/v2/campaign/create' \
+  -H 'Content-Type: application/json' \
+  -H 'xi-api-key: YOUR_API_KEY' \
+  -d '{
+    "type": "whatsapp",
+    "name": "Customer Onboarding WhatsApp",
+    "bot_id": "507f1f77bcf86cd799439011",
+    "sip_caller_id": "+1234567890",
+    "list_ids": [6, 7, 8],
+    "days": [1, 2, 3, 4, 5],
+    "start_date": "2024-06-01",
+    "end_date": "2024-06-15",
+    "start_time": "09:00:00",
+    "end_time": "17:00:00",
+    "timezone": "Europe/London",
+    "meta_data": {
+      "phone_number_id": "123456789012345",
+      "template_name": "welcome_message",
+      "template_id": "1234567890123456789",
+      "language_code": "en_US",
+      "namespace": "your_namespace"
+    }
+  }'
+```
+</RequestExample>
+
+## Campaign Scheduling
+
+### Timezone Support
+When using timezone-aware scheduling, the system automatically converts your local times to UTC:
+
+<Steps>
+<Step title="Set Local Time">
+  Specify your campaign time in the local timezone of your target audience.
+</Step>
+
+<Step title="Timezone Conversion">
+  The system converts local times to UTC for consistent execution.
+</Step>
+
+<Step title="Day Mapping">
+  Local days are mapped to UTC days to ensure campaigns run on the correct days.
+</Step>
+
+<Step title="Execution">
+  Campaigns execute at the correct local time for each contact.
+</Step>
+</Steps>
+
+### Example: Global Campaign
+```json
+{
+  "timezone": "America/New_York",
+  "start_time": "09:00:00",
+  "end_time": "17:00:00",
+  "days": [1, 2, 3, 4, 5],
+  "start_date": "2024-06-01",
+  "end_date": "2024-06-30"
+}
+```
+
+This creates a campaign that runs Monday-Friday, 9 AM - 5 PM Eastern Time.
+
+## Best Practices
+
+### Campaign Planning
+<Tip>
+**Test with Small Audiences**: Always test new campaigns with a small group before full deployment.
+</Tip>
+
+### Scheduling Optimization
+<Warning>
+**Respect Local Times**: Use timezone-aware scheduling to avoid contacting customers at inappropriate hours.
+</Warning>
+
+### Channel Selection
+<Info>
+**Match Channel to Use Case**: Choose the right channel for your message type and audience preferences.
+</Info>
+
+## Common Use Cases
+
+### Lead Generation
+- **Phone**: Automated outbound calls with lead qualification
+- **SMS**: Follow-up messages with call-to-action links
+- **WhatsApp**: Rich media messages with interactive buttons
+
+### Customer Onboarding
+- **Phone**: Welcome calls with product demonstrations
+- **SMS**: Step-by-step onboarding instructions
+- **WhatsApp**: Interactive tutorials and support
+
+### Event Marketing
+- **Phone**: Event invitations with RSVP collection
+- **SMS**: Event reminders and updates
+- **WhatsApp**: Event details with media and location sharing
+
+## Error Handling
+
+<AccordionGroup>
+<Accordion title="Invalid Campaign Parameters">
+  - **Error**: `400 Bad Request`
+  - **Cause**: Missing required fields or invalid data types
+  - **Solution**: Verify all required fields are provided and data types match the schema
+</Accordion>
+
+<Accordion title="Invalid Bot ID">
+  - **Error**: `400 Bad Request - Invalid bot ID`
+  - **Cause**: Bot ID doesn't exist or user doesn't have access
+  - **Solution**: Verify the bot ID and ensure you have proper permissions
+</Accordion>
+
+<Accordion title="Invalid Contact Lists">
+  - **Error**: `400 Bad Request - Invalid list IDs`
+  - **Cause**: One or more contact list IDs don't exist
+  - **Solution**: Verify all list IDs exist and are accessible
+</Accordion>
+
+<Accordion title="WhatsApp Channel Not Configured">
+  - **Error**: `400 Bad Request - Please configure whatsapp channel`
+  - **Cause**: WhatsApp Business API not set up for the user
+  - **Solution**: Configure WhatsApp Business API before creating WhatsApp campaigns
+</Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+After creating a campaign:
+
+- [Get Campaign Details](/api-reference/campaign/get) - Retrieve campaign information
+- [Update Campaign](/api-reference/campaign/update) - Modify campaign settings
+- [Add Campaign Contacts](/api-reference/campaign/contacts) - Manage campaign audience
+- [Monitor Campaign](/api-reference/analytics) - Track campaign performance

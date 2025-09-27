@@ -1,0 +1,353 @@
+---
+title: "Create Contact List"
+openapi: 'POST /v2/campaign/contacts'
+description: "Create a new contact list with contacts"
+---
+
+# Create Contact List
+
+Create a new contact list and add contacts to it. This endpoint allows you to organize your contacts into targeted lists for campaign management.
+
+## Overview
+
+The Create Contact List endpoint enables you to:
+
+- **Create New Lists**: Set up new contact lists with descriptive names
+- **Add Contacts**: Include contacts with their details and attributes
+- **Bulk Operations**: Add multiple contacts at once
+- **Custom Attributes**: Store additional contact information for personalization
+- **List Organization**: Organize contacts for better campaign management
+
+## Contact List Creation
+
+### List Setup
+Create contact lists to organize your audience:
+
+<Steps>
+<Step title="Choose List Name">
+  Select a descriptive name that clearly indicates the list's purpose.
+</Step>
+
+<Step title="Prepare Contacts">
+  Gather contact information including phone numbers and attributes.
+</Step>
+
+<Step title="Validate Data">
+  Ensure all contact data is valid and properly formatted.
+</Step>
+
+<Step title="Create List">
+  Submit the list creation request with contact data.
+</Step>
+
+<Step title="Verify Creation">
+  Confirm the list was created successfully.
+</Step>
+</Steps>
+
+### Contact Requirements
+All contacts must meet these requirements:
+
+- **Valid Phone Number**: Must have a valid `sys_phone` field
+- **Unique Phone Numbers**: No duplicate phone numbers in the same list
+- **Proper Format**: Phone numbers are automatically cleaned to digits only
+- **Required Fields**: `sys_phone` is the only required field
+
+## Examples
+
+### Create List with Single Contact
+
+<RequestExample>
+```bash cURL
+curl -X POST 'https://api.example.com/v2/campaign/contacts' \
+  -H 'Content-Type: application/json' \
+  -H 'xi-api-key: YOUR_API_KEY' \
+  -d '{
+    "listName": "VIP Customers",
+    "contacts": [
+      {
+        "sys_phone": "+1234567890",
+        "first_name": "John",
+        "last_name": "Doe",
+        "email": "john@example.com",
+        "company": "Acme Corp",
+        "customer_tier": "premium"
+      }
+    ]
+  }'
+```
+</RequestExample>
+
+<ResponseExample>
+```json Success Response
+{
+  "listId": 123,
+  "message": "Contact list created successfully",
+  "contactsAdded": 1,
+  "totalContacts": 1
+}
+```
+</ResponseExample>
+
+### Create List with Multiple Contacts
+
+<RequestExample>
+```bash cURL
+curl -X POST 'https://api.example.com/v2/campaign/contacts' \
+  -H 'Content-Type: application/json' \
+  -H 'xi-api-key: YOUR_API_KEY' \
+  -d '{
+    "listName": "Lead Prospects",
+    "contacts": [
+      {
+        "sys_phone": "+1234567890",
+        "first_name": "John",
+        "last_name": "Doe",
+        "email": "john@example.com",
+        "company": "Acme Corp"
+      },
+      {
+        "sys_phone": "+1987654321",
+        "first_name": "Jane",
+        "last_name": "Smith",
+        "email": "jane@example.com",
+        "company": "Tech Inc"
+      },
+      {
+        "sys_phone": "+1555123456",
+        "first_name": "Bob",
+        "last_name": "Johnson",
+        "email": "bob@example.com",
+        "company": "Startup Co"
+      }
+    ]
+  }'
+```
+</RequestExample>
+
+<ResponseExample>
+```json Success Response
+{
+  "listId": 124,
+  "message": "Contact list created successfully",
+  "contactsAdded": 3,
+  "totalContacts": 3
+}
+```
+</ResponseExample>
+
+### Create List with Custom Attributes
+
+<RequestExample>
+```bash cURL
+curl -X POST 'https://api.example.com/v2/campaign/contacts' \
+  -H 'Content-Type: application/json' \
+  -H 'xi-api-key: YOUR_API_KEY' \
+  -d '{
+    "listName": "High-Value Prospects",
+    "contacts": [
+      {
+        "sys_phone": "+1234567890",
+        "first_name": "John",
+        "last_name": "Doe",
+        "email": "john@example.com",
+        "company": "Acme Corp",
+        "industry": "Technology",
+        "preferred_language": "en",
+        "customer_tier": "premium",
+        "last_purchase": "2024-01-15",
+        "lead_score": 95,
+        "source": "website",
+        "notes": "Interested in enterprise plan"
+      }
+    ]
+  }'
+```
+</RequestExample>
+
+<ResponseExample>
+```json Success Response
+{
+  "listId": 125,
+  "message": "Contact list created successfully",
+  "contactsAdded": 1,
+  "totalContacts": 1
+}
+```
+</ResponseExample>
+
+## Contact Data Structure
+
+### Required Fields
+- **listName**: Name for the contact list
+- **contacts**: Array of contact objects
+- **sys_phone**: Contact's phone number (required for each contact)
+
+### Optional Fields
+You can include any additional attributes for each contact:
+
+```json
+{
+  "sys_phone": "+1234567890",
+  "first_name": "John",
+  "last_name": "Doe",
+  "email": "john@example.com",
+  "company": "Acme Corp",
+  "industry": "Technology",
+  "preferred_language": "en",
+  "customer_tier": "premium",
+  "last_purchase": "2024-01-15",
+  "custom_field": "custom_value"
+}
+```
+
+### Phone Number Formatting
+Phone numbers are automatically cleaned:
+
+- **Input**: `+1 (234) 567-8900`
+- **Cleaned**: `12345678900`
+- **Stored**: `12345678900`
+
+<Warning>
+**Phone Validation**: Ensure phone numbers are valid and reachable to avoid campaign failures.
+</Warning>
+
+## Use Cases
+
+### Audience Segmentation
+- **Customer Segments**: Create lists for different customer types
+- **Geographic Lists**: Organize contacts by location
+- **Behavioral Lists**: Group contacts by engagement patterns
+- **Demographic Lists**: Segment by age, industry, or other demographics
+
+### Campaign Preparation
+- **Target Lists**: Create specific lists for targeted campaigns
+- **Test Groups**: Set up small lists for campaign testing
+- **Control Groups**: Create lists for A/B testing
+- **Seasonal Lists**: Organize contacts for seasonal campaigns
+
+### Data Organization
+- **Import Organization**: Organize imported contact data
+- **Lead Management**: Create lists for lead nurturing
+- **Customer Lifecycle**: Organize contacts by lifecycle stage
+- **Engagement Levels**: Group contacts by engagement frequency
+
+## Best Practices
+
+### List Naming
+<Tip>
+**Use Descriptive Names**: Choose clear, descriptive names that indicate the list's purpose and content.
+</Tip>
+
+### Data Quality
+<Warning>
+**Validate Data**: Always validate contact data before creating lists to ensure quality and avoid issues.
+</Warning>
+
+### List Organization
+<Info>
+**Plan Your Structure**: Design a logical list organization structure before creating lists to avoid confusion.
+</Info>
+
+## Error Handling
+
+<AccordionGroup>
+<Accordion title="Missing List Name">
+  - **Error**: `400 Bad Request - List name required`
+  - **Cause**: No list name provided in the request
+  - **Solution**: Include a listName field in your request
+</Accordion>
+
+<Accordion title="Invalid Phone Numbers">
+  - **Error**: `400 Bad Request - No Contacts with a valid sys_phone found`
+  - **Cause**: All contacts have invalid phone numbers
+  - **Solution**: Ensure at least one contact has a valid phone number
+</Accordion>
+
+<Accordion title="Duplicate Phone Numbers">
+  - **Error**: `400 Bad Request - Contacts have duplicate sys_phone`
+  - **Cause**: Multiple contacts with the same phone number
+  - **Solution**: Remove duplicate phone numbers before creating the list
+</Accordion>
+
+<Accordion title="Empty Contact List">
+  - **Error**: `400 Bad Request - No Contacts with a valid sys_phone found`
+  - **Cause**: No valid contacts provided
+  - **Solution**: Ensure at least one contact has a valid phone number
+</Accordion>
+</AccordionGroup>
+
+## Performance Considerations
+
+### Bulk Operations
+- **Batch Size**: Process contacts in batches for better performance
+- **Rate Limits**: Be mindful of API rate limits when creating large lists
+- **Async Processing**: Large list creations may be processed asynchronously
+
+### Data Validation
+- **Pre-validation**: Validate contact data before sending to the API
+- **Error Handling**: Implement proper error handling for failed contact additions
+- **Retry Logic**: Use retry logic for transient failures
+
+## List Creation Workflow
+
+### Planning Phase
+<Steps>
+<Step title="Define Purpose">
+  Clearly define the purpose and target audience for the list.
+</Step>
+
+<Step title="Gather Data">
+  Collect all necessary contact information and attributes.
+</Step>
+
+<Step title="Validate Data">
+  Ensure all contact data is valid and properly formatted.
+</Step>
+
+<Step title="Choose Name">
+  Select a descriptive name that clearly indicates the list's purpose.
+</Step>
+</Steps>
+
+### Creation Phase
+<Steps>
+<Step title="Format Data">
+  Structure the contact data according to the API requirements.
+</Step>
+
+<Step title="Send Request">
+  Submit the list creation request to the API.
+</Step>
+
+<Step title="Verify Success">
+  Confirm the list was created successfully.
+</Step>
+
+<Step title="Test List">
+  Verify the list works correctly for campaigns.
+</Step>
+</Steps>
+
+## Monitoring List Creation
+
+### Success Metrics
+- **Lists Created**: Number of lists successfully created
+- **Contacts Added**: Number of contacts successfully added
+- **Success Rate**: Percentage of successful list creations
+- **Error Rate**: Percentage of failed list creations
+
+### Performance Tracking
+- **Creation Time**: Time taken to create lists
+- **Processing Speed**: Rate of contact processing
+- **Error Frequency**: Rate of errors during list creation
+- **System Load**: Impact on system performance
+
+## Next Steps
+
+After creating contact lists:
+
+- [Get Contact Lists](/api-reference/contacts/list) - View all your contact lists
+- [Get List Contacts](/api-reference/contacts/get) - View contacts in specific lists
+- [Update Contact List](/api-reference/contacts/update) - Modify list information
+- [Create Campaign](/api-reference/campaign/create) - Use lists in campaigns

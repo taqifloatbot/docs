@@ -1,0 +1,255 @@
+---
+title: "Archive Campaign"
+openapi: 'POST /v2/campaign/{campaignId}/archive'
+description: "Archive a campaign to remove it from active management"
+---
+
+# Archive Campaign
+
+Archive a campaign to remove it from active management while preserving all data and performance history. Archived campaigns cannot be modified or restarted.
+
+## Overview
+
+The Archive Campaign endpoint allows you to:
+
+- **Remove from Active Management**: Campaigns no longer appear in active campaign lists
+- **Preserve Data**: All campaign data, performance metrics, and history are retained
+- **Free Resources**: Release system resources used by active campaigns
+- **Maintain Compliance**: Keep campaign data for audit and reporting purposes
+
+## When to Archive Campaigns
+
+### Campaign Lifecycle
+Campaigns should be archived when they have reached their natural end:
+
+<Steps>
+<Step title="Campaign Completion">
+  Campaign has finished its scheduled execution period.
+</Step>
+
+<Step title="Goal Achievement">
+  Campaign has achieved its intended objectives.
+</Step>
+
+<Step title="Data Collection">
+  Sufficient data has been collected for analysis.
+</Step>
+
+<Step title="Archive Decision">
+  Decision is made to archive the campaign.
+</Step>
+
+<Step title="Archive Execution">
+  Campaign is archived and removed from active management.
+</Step>
+</Steps>
+
+### Archive Criteria
+Archive campaigns when they meet these criteria:
+
+- **Completed Successfully**: Campaign finished without errors
+- **Reached End Date**: Campaign has passed its scheduled end date
+- **Achieved Goals**: Campaign met its performance objectives
+- **No Longer Needed**: Campaign is no longer relevant or useful
+
+## Examples
+
+### Archive a Completed Campaign
+
+<RequestExample>
+```bash cURL
+curl -X POST 'https://api.example.com/v2/campaign/12345/archive' \
+  -H 'xi-api-key: YOUR_API_KEY'
+```
+</RequestExample>
+
+<ResponseExample>
+```json Success Response
+{
+  "status": "success",
+  "message": "Campaign archived successfully"
+}
+```
+</ResponseExample>
+
+### Archive a Failed Campaign
+
+<RequestExample>
+```bash cURL
+curl -X POST 'https://api.example.com/v2/campaign/12346/archive' \
+  -H 'xi-api-key: YOUR_API_KEY'
+```
+</RequestExample>
+
+<ResponseExample>
+```json Success Response
+{
+  "status": "success",
+  "message": "Campaign archived successfully"
+}
+```
+</ResponseExample>
+
+### Archive a Cancelled Campaign
+
+<RequestExample>
+```bash cURL
+curl -X POST 'https://api.example.com/v2/campaign/12347/archive' \
+  -H 'xi-api-key: YOUR_API_KEY'
+```
+</RequestExample>
+
+<ResponseExample>
+```json Success Response
+{
+  "status": "success",
+  "message": "Campaign archived successfully"
+}
+```
+</ResponseExample>
+
+## Archive vs Delete
+
+### Archive Campaign
+- **Data Preserved**: All campaign data and history retained
+- **Performance Metrics**: Analytics and reporting data maintained
+- **Audit Trail**: Complete audit trail preserved
+- **Compliance**: Meets data retention requirements
+- **Reversible**: Can be restored if needed (with admin access)
+
+### Delete Campaign
+- **Data Lost**: All campaign data permanently removed
+- **No Recovery**: Cannot be restored once deleted
+- **Compliance Risk**: May violate data retention policies
+- **Audit Issues**: Breaks audit trail continuity
+
+<Tip>
+**Always Archive**: Use archive instead of delete to maintain data integrity and compliance.
+</Tip>
+
+## What Happens When Archived
+
+### Immediate Changes
+- **Status Change**: Campaign status changes to "Archived"
+- **Removed from Lists**: No longer appears in active campaign lists
+- **Stops Execution**: Any ongoing execution is stopped
+- **Resource Release**: System resources are freed up
+
+### Data Preservation
+- **Campaign Configuration**: All settings and parameters preserved
+- **Performance Data**: Complete performance metrics retained
+- **Contact Information**: All contact data and interactions maintained
+- **Audit Trail**: Complete history of all campaign activities
+
+### Access Changes
+- **Read-Only Access**: Can view archived campaigns but cannot modify
+- **Reporting Access**: Archived campaigns still appear in reports
+- **Analytics Access**: Performance data remains available for analysis
+- **Export Access**: Can export archived campaign data
+
+## Use Cases
+
+### Campaign Lifecycle Management
+- **End of Campaign**: Archive campaigns that have completed their lifecycle
+- **Seasonal Campaigns**: Archive time-limited campaigns after their season
+- **Test Campaigns**: Archive experimental campaigns after testing
+- **Legacy Campaigns**: Archive old campaigns that are no longer relevant
+
+### Resource Management
+- **System Cleanup**: Free up system resources by archiving old campaigns
+- **Performance Optimization**: Improve system performance by reducing active campaigns
+- **Storage Management**: Organize campaign data for better storage efficiency
+
+### Compliance and Reporting
+- **Data Retention**: Meet data retention requirements by archiving instead of deleting
+- **Audit Compliance**: Maintain complete audit trails for compliance
+- **Historical Analysis**: Preserve data for long-term trend analysis
+- **Regulatory Requirements**: Meet regulatory requirements for data preservation
+
+## Best Practices
+
+### Archive Timing
+<Tip>
+**Archive Promptly**: Archive campaigns soon after completion to maintain clean active lists.
+</Tip>
+
+### Data Verification
+<Warning>
+**Verify Data**: Ensure all important data is captured before archiving campaigns.
+</Warning>
+
+### Documentation
+<Info>
+**Document Reasons**: Keep records of why campaigns were archived for future reference.
+</Info>
+
+## Error Handling
+
+<AccordionGroup>
+<Accordion title="Campaign Not Found">
+  - **Error**: `404 Not Found`
+  - **Cause**: Campaign ID doesn't exist or user doesn't have access
+  - **Solution**: Verify the campaign ID and ensure you have proper permissions
+</Accordion>
+
+<Accordion title="Campaign Already Archived">
+  - **Error**: `400 Bad Request - Campaign already archived`
+  - **Cause**: Attempting to archive a campaign that's already archived
+  - **Solution**: Check current campaign status before archiving
+</Accordion>
+
+<Accordion title="Invalid Campaign State">
+  - **Error**: `400 Bad Request - Cannot archive campaign in current state`
+  - **Cause**: Campaign is in a state that cannot be archived (e.g., actively running)
+  - **Solution**: Pause or complete the campaign before archiving
+</Accordion>
+
+<Accordion title="Access Denied">
+  - **Error**: `403 Forbidden`
+  - **Cause**: User doesn't have permission to archive campaigns
+  - **Solution**: Contact administrator for proper access permissions
+</Accordion>
+</AccordionGroup>
+
+## Archive Workflow
+
+### Pre-Archive Checklist
+Before archiving a campaign, verify:
+
+- [ ] Campaign has completed its intended purpose
+- [ ] All performance data has been collected
+- [ ] No active processes are running
+- [ ] All stakeholders have been notified
+- [ ] Backup of important data has been made
+
+### Post-Archive Actions
+After archiving a campaign:
+
+- [ ] Update campaign documentation
+- [ ] Notify relevant team members
+- [ ] Update reporting dashboards
+- [ ] Archive related documentation
+- [ ] Update campaign templates if needed
+
+## Monitoring Archived Campaigns
+
+### Accessing Archived Data
+- **Campaign Details**: Can still view archived campaign information
+- **Performance Reports**: Archived campaigns appear in historical reports
+- **Analytics**: Performance data remains available for analysis
+- **Export**: Can export archived campaign data
+
+### Reporting and Analytics
+- **Historical Analysis**: Use archived campaign data for trend analysis
+- **Performance Comparison**: Compare archived campaigns with current ones
+- **ROI Analysis**: Calculate long-term ROI using archived data
+- **Compliance Reporting**: Generate compliance reports using archived data
+
+## Next Steps
+
+After archiving a campaign:
+
+- [View Archived Campaigns](/api-reference/campaign/get) - Access archived campaign data
+- [Generate Reports](/api-reference/analytics) - Create reports using archived data
+- [Create New Campaigns](/api-reference/campaign/create) - Start new campaigns
+- [Manage Contact Lists](/api-reference/contacts) - Organize contacts for new campaigns
