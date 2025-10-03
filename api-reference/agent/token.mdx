@@ -1,0 +1,190 @@
+---
+title: "Get Agent Token"
+openapi: 'POST /v2/agent/token'
+description: "Generate authentication token for agent access using API key authentication"
+---
+
+# Get Agent Token
+
+Generate a secure authentication token for agent access. This endpoint allows authenticated users to obtain a temporary token that can be used for agent-specific operations.
+
+## Overview
+
+The Get Agent Token endpoint provides:
+
+- **Secure Token Generation**: Creates a time-limited authentication token
+- **API Key Authentication**: Uses API key for initial authentication
+- **Agent Access**: Enables agent-specific functionality
+- **Timezone Support**: Handles timezone configuration for proper token generation
+- **Nonce-based Security**: Uses secure nonce generation for enhanced security
+
+## Authentication
+
+This endpoint requires API key authentication via the `xi-api-key` header.
+
+## Request
+
+### Headers
+
+| Header | Type | Required | Description |
+|--------|------|----------|-------------|
+| `xi-api-key` | string | Yes | Your API key for authentication |
+| `Content-Type` | string | Yes | Must be `application/json` |
+
+### Request Body
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `email` | string | Yes | Agent's email address for verification |
+| `timezone` | number | No | Timezone offset in minutes (default: -330 for IST) |
+
+### Timezone Format
+
+The timezone parameter accepts a number representing minutes offset from UTC:
+- **Positive values**: West of UTC (e.g., 300 for UTC-5)
+- **Negative values**: East of UTC (e.g., -330 for UTC+5:30)
+- **Default**: -330 (Indian Standard Time)
+
+## Response
+
+### Success Response (200 OK)
+
+```json
+{
+  "code": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "expires": "2024-01-15T12:30:00.000Z"
+}
+```
+
+### Response Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `code` | string | The generated authentication token (JWT) |
+| `expires` | string | Token expiration timestamp in ISO 8601 format |
+
+## Examples
+
+### Basic Token Request
+
+<RequestExample>
+```bash cURL
+curl -X POST 'https://api.example.com/v2/agent/token' \
+  -H 'xi-api-key: YOUR_API_KEY' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "email": "agent@example.com",
+    "timezone": -330
+  }'
+```
+</RequestExample>
+
+<ResponseExample>
+```json Success Response
+{
+  "code": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTIzLCJ0eXBlIjoiQWdlbnQiLCJ0aW1lem9uZSI6IiswNTozMCIsImRhc2hib2FyZElkIjoiZGFzaGJvYXJkXzEyMyIsImlhdCI6MTcwNTMxMjAwMCwiZXhwIjoxNzA1MzE1NjAwfQ.signature",
+  "expires": "2024-01-15T12:30:00.000Z"
+}
+```
+</ResponseExample>
+
+### Token Request with Different Timezone
+
+<RequestExample>
+```bash cURL
+curl -X POST 'https://api.example.com/v2/agent/token' \
+  -H 'xi-api-key: YOUR_API_KEY' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "email": "agent@example.com",
+    "timezone": 300
+  }'
+```
+</RequestExample>
+
+<ResponseExample>
+```json Success Response
+{
+  "code": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTIzLCJ0eXBlIjoiQWdlbnQiLCJ0aW1lem9uZSI6Ii0wNTowMCIsImRhc2hib2FyZElkIjoiZGFzaGJvYXJkXzEyMyIsImlhdCI6MTcwNTMxMjAwMCwiZXhwIjoxNzA1MzE1NjAwfQ.signature",
+  "expires": "2024-01-15T12:30:00.000Z"
+}
+```
+</ResponseExample>
+
+## Error Responses
+
+### 401 Unauthorized - Missing API Key
+
+<ResponseExample>
+```json Error Response
+{
+  "error": "Missing API key"
+}
+```
+</ResponseExample>
+
+### 401 Unauthorized - Invalid API Key
+
+<ResponseExample>
+```json Error Response
+{
+  "error": "Invalid or revoked key"
+}
+```
+</ResponseExample>
+
+### 401 Unauthorized - Authentication Required
+
+<ResponseExample>
+```json Error Response
+{
+  "error": "Please authenticate"
+}
+```
+</ResponseExample>
+
+### 400 Bad Request - Invalid Email
+
+<ResponseExample>
+```json Error Response
+{
+  "error": "Agent email verification failed"
+}
+```
+</ResponseExample>
+
+## Usage Notes
+
+### Token Security
+
+- **Time-limited**: Tokens have a limited lifespan for security
+- **Nonce-based**: Uses secure nonce generation to prevent replay attacks
+- **Single-use**: Tokens are designed for one-time use in most scenarios
+
+### Timezone Handling
+
+- The system automatically converts timezone offsets to proper timezone strings
+- Positive offsets are converted to negative timezone strings (e.g., 300 → "-05:00")
+- Negative offsets are converted to positive timezone strings (e.g., -330 → "+05:30")
+
+### Integration
+
+This token can be used with other agent-related endpoints that require authentication. The token should be included in the `Authorization` header as a Bearer token:
+
+```bash
+Authorization: Bearer YOUR_GENERATED_TOKEN
+```
+
+## Related Endpoints
+
+- [Agent Authentication](/api-reference/agent/auth) - Full agent login flow
+- [Agent Configuration](/api-reference/agent/config) - Get agent configuration
+- [Agent Refresh Tokens](/api-reference/agent/refresh) - Refresh expired tokens
+
+## Rate Limiting
+
+This endpoint is subject to standard API rate limiting. Please refer to the [Rate Limiting](/docs/rate-limiting) documentation for details.
+
+## Support
+
+For additional support or questions about agent token generation, please contact our support team or refer to the [API Documentation](/docs).

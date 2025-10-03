@@ -1,0 +1,85 @@
+---
+title: "Agent API"
+description: "API endpoints for agent authentication and management"
+---
+
+# Agent API
+
+The Agent API provides endpoints for agent authentication, token management, and configuration. These endpoints are designed for agent-specific operations and require appropriate authentication.
+
+## Available Endpoints
+
+### Authentication
+
+- **[Get Agent Token](/api-reference/agent/token)** - Generate authentication token for agent access
+
+## Authentication Methods
+
+### API Key Authentication
+
+Most agent endpoints require API key authentication using the `xi-api-key` header:
+
+```bash
+curl -H 'xi-api-key: YOUR_API_KEY' \
+     -H 'Content-Type: application/json' \
+     'https://api.example.com/v2/agent/endpoint'
+```
+
+### Token-based Authentication
+
+Some endpoints may require Bearer token authentication:
+
+```bash
+curl -H 'Authorization: Bearer YOUR_TOKEN' \
+     -H 'Content-Type: application/json' \
+     'https://api.example.com/v2/agent/endpoint'
+```
+
+## Common Features
+
+### Timezone Support
+
+Agent endpoints support timezone configuration to ensure proper handling of time-sensitive operations:
+
+- **Input Format**: Minutes offset from UTC (e.g., -330 for IST, 300 for EST)
+- **Automatic Conversion**: System converts to proper timezone strings
+- **Default Timezone**: Indian Standard Time (IST) if not specified
+
+### Error Handling
+
+All agent endpoints return consistent error responses:
+
+- **401 Unauthorized**: Missing or invalid authentication
+- **400 Bad Request**: Invalid request parameters
+- **403 Forbidden**: Insufficient permissions
+- **500 Internal Server Error**: Server-side errors
+
+### Response Format
+
+Successful responses typically include:
+
+```json
+{
+  "code": "generated_token_or_data",
+  "expires": "2024-01-15T12:30:00.000Z",
+  "status": "success"
+}
+```
+
+## Getting Started
+
+1. **Obtain API Key**: Get your API key from the dashboard
+2. **Generate Agent Token**: Use the token endpoint to get authentication credentials
+3. **Make Requests**: Use the generated token for subsequent API calls
+
+## Rate Limiting
+
+Agent endpoints are subject to standard API rate limiting. Please refer to the [Rate Limiting](/docs/rate-limiting) documentation for specific limits and best practices.
+
+## Support
+
+For questions about the Agent API or troubleshooting, please:
+
+- Check the [API Documentation](/docs) for detailed endpoint information
+- Review the [Error Codes](/docs/error-codes) for common issues
+- Contact our support team for additional assistance

@@ -77,10 +77,10 @@
             ]
           },
           {
-            "group": "Analytics & Integration",
+            "group": "Agent API",
             "pages": [
-              "api-reference/analytics",
-              "api-reference/webhooks"
+              "api-reference/agent",
+              "api-reference/agent/token"
             ]
           }
         ]

@@ -10,7 +10,16 @@
   },
   "servers": [
     {
-      "url": "https://api.example.com"
+      "url": "https://dev.floatbot.ai/bot-api"
+    },
+    {
+      "url": "https://floatbot.ai/bot-api"
+    },
+    {
+      "url": "https://us.floatbot.ai/bot-api"
+    },
+    {
+      "url": "https://uae.floatbot.ai/bot-api"
     }
   ],
   "security": [
@@ -581,6 +590,84 @@
           },
           "400": {
             "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/agent/token": {
+      "post": {
+        "summary": "Get Agent Token",
+        "description": "Generate authentication token for agent access using API key authentication",
+        "tags": ["Agent"],
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email"],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "Agent's email address for verification"
+                  },
+                  "timezone": {
+                    "type": "number",
+                    "description": "Timezone offset in minutes (default: -330 for IST)",
+                    "default": -330
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Token generated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "The generated authentication token (JWT)"
+                    },
+                    "expires": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Token expiration timestamp in ISO 8601 format"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
